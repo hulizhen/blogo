@@ -1,17 +1,23 @@
 package main
 
 import (
+	"fmt"
+
 	"github.com/gin-gonic/gin"
+	"github.com/hulizhen/blogo/config"
 )
 
 func main() {
-	engine := gin.Default()
-	engine.LoadHTMLGlob("../../template/*")
-	engine.GET("/", func(c *gin.Context) {
+	cfg := config.SharedConfig()
+	addr := fmt.Sprintf(":%d", cfg.Server.Port)
+
+	e := gin.Default()
+	e.LoadHTMLGlob("template/*")
+	e.GET("/", func(c *gin.Context) {
 		c.HTML(200, "index.html", gin.H{
-			"title":   "Blogo",
-			"content": "A blog engine built with Go.",
+			"title":   cfg.Blog.Title,
+			"content": cfg.Blog.Description,
 		})
 	})
-	engine.Run(":8080")
+	e.Run(addr)
 }
