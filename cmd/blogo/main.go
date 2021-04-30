@@ -13,10 +13,11 @@ func main() {
 
 	e := gin.Default()
 	e.LoadHTMLGlob("template/*")
+	e.StaticFile("favicon.ico", cfg.Website.FaviconPath)
 	e.GET("/", func(c *gin.Context) {
 		c.HTML(200, "index.html", gin.H{
-			"title":   cfg.Blog.Title,
-			"content": cfg.Blog.Description,
+			"title":   cfg.Website.Title,
+			"content": cfg.Website.Description,
 		})
 	})
 	e.Run(addr)

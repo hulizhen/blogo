@@ -4,14 +4,15 @@ import (
 	"fmt"
 	"os"
 
-	"github.com/hulizhen/blogo/pkg/homedir"
+	"github.com/hulizhen/blogo/pkg/tilde"
 	"github.com/pelletier/go-toml"
 )
 
-type blog struct {
-	Title       string `toml:"title"`
-	Description string `toml:"description"`
-	RepoPath    string `toml:"repo_path"`
+type website struct {
+	FaviconPath  string `toml:"favicon_path"`
+	BlogRepoPath string `toml:"blog_repo_path"`
+	Title        string `toml:"title"`
+	Description  string `toml:"description"`
 }
 
 type server struct {
@@ -20,15 +21,16 @@ type server struct {
 
 // Config provides the configurations for the application.
 type Config struct {
-	Blog   blog   `toml:"blog"`
-	Server server `toml:"server"`
+	Website website `toml:"website"`
+	Server  server  `toml:"server"`
 }
 
 var defaultConfigs = Config{
-	Blog: blog{
-		Title:       "Blogo",
-		Description: "A blog engine built with Go.",
-		RepoPath:    "~/.blogo/blog",
+	Website: website{
+		FaviconPath:  "~/.blogo/favicon.ico",
+		BlogRepoPath: "~/.blogo/blog",
+		Title:        "Blogo",
+		Description:  "A blog engine built with Go.",
 	},
 	Server: server{
 		Port: 8000,
@@ -63,12 +65,14 @@ func new(paths []string, defaults Config) *Config {
 	if err != nil {
 		fmt.Printf("Failed to open config file with error: %v, use the defaults.\n", err.Error())
 	}
+	tilde.Expand(&cfg.Website.FaviconPath)
+	tilde.Expand(&cfg.Website.BlogRepoPath)
 	return &cfg
 }
 
 func openConfigFile(paths []string) (*os.File, error) {
 	for _, p := range paths {
-		p = homedir.Expand(p)
+		tilde.Expand(&p)
 		if file, err := os.Open(p); err == nil {
 			return file, nil
 		}

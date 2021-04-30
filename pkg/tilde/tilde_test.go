@@ -1,4 +1,4 @@
-package homedir
+package tilde
 
 import (
 	"os"
@@ -21,9 +21,10 @@ var cases = []struct {
 	{"/TestA/TestB", "/TestA/TestB"},
 }
 
-func TestExpand(t *testing.T) {
+func TestExpandTilde(t *testing.T) {
 	for _, c := range cases {
-		if Expand(c.path) != c.result {
+		Expand(&c.path)
+		if c.path != c.result {
 			t.Errorf("expand '%v' should result in '%v'", c.path, c.result)
 		}
 	}
