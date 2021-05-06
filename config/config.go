@@ -9,10 +9,11 @@ import (
 )
 
 type website struct {
-	FaviconPath  string `toml:"favicon_path"`
-	BlogRepoPath string `toml:"blog_repo_path"`
-	Title        string `toml:"title"`
+	Name         string `toml:"name"`
 	Description  string `toml:"description"`
+	FaviconPath  string `toml:"favicon_path"`
+	LogoPath     string `toml:"logo_path"`
+	BlogRepoPath string `toml:"blog_repo_path"`
 }
 
 type server struct {
@@ -28,8 +29,9 @@ type Config struct {
 var defaultConfigs = Config{
 	Website: website{
 		FaviconPath:  "~/.blogo/favicon.ico",
+		LogoPath:     "~/.blogo/logo.png",
 		BlogRepoPath: "~/.blogo/blog",
-		Title:        "Blogo",
+		Name:         "Blogo",
 		Description:  "A blog engine built with Go.",
 	},
 	Server: server{
@@ -66,6 +68,7 @@ func new(paths []string, defaults Config) *Config {
 		fmt.Printf("Failed to open config file with error: %v, use the defaults.\n", err.Error())
 	}
 	tilde.Expand(&cfg.Website.FaviconPath)
+	tilde.Expand(&cfg.Website.LogoPath)
 	tilde.Expand(&cfg.Website.BlogRepoPath)
 	return &cfg
 }
