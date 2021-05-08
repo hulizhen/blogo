@@ -28,57 +28,57 @@ type Config struct {
 
 var defaultConfigs = Config{
 	Website: website{
+		Name:         "Blogo",
+		Description:  "A blog engine built with Go.",
 		FaviconPath:  "~/.blogo/favicon.ico",
 		LogoPath:     "~/.blogo/logo.png",
 		BlogRepoPath: "~/.blogo/blog",
-		Name:         "Blogo",
-		Description:  "A blog engine built with Go.",
 	},
 	Server: server{
 		Port: 8000,
 	},
 }
 
-var configFilePaths []string = []string{
-	"config.toml",
-	"~/.blogo/config.toml",
-}
+var customConfigFilePath = "~/.blogo/config.toml"
 
 var sharedConfig *Config
 
 // SharedConfig always returns a singleton of the Config instance
 // to share in the whole application.
+
 func SharedConfig() *Config {
 	if sharedConfig == nil {
-		sharedConfig = new(configFilePaths, defaultConfigs)
+		sharedConfig = new(customConfigFilePath)
 	}
 	return sharedConfig
 }
 
-// new creates a Config with the provided default configurations,
-// which then overwritten by local custom config file.
-func new(paths []string, defaults Config) *Config {
-	cfg := defaults
-	f, err := openConfigFile(paths)
-	if f != nil {
-		d := toml.NewDecoder(f)
-		err = d.Decode(&cfg)
-	}
+// new creates a Config with the default configurations,
+// which then overwritten by local custom config.toml file.
+func new(p string) *Config {
+	cfg := defaultConfigs
+
+	// Parse the custom config.toml file.
+	tilde.Expand(&p)
+	err := parseConfigFile(p, &cfg)
 	if err != nil {
-		fmt.Printf("Failed to open config file with error: %v, use the defaults.\n", err.Error())
+		fmt.Printf("Failed to parse the custom configurations with error: %v, use the defaults.\n", err)
 	}
+
+	// Expand the tilde in path strings.
 	tilde.Expand(&cfg.Website.FaviconPath)
 	tilde.Expand(&cfg.Website.LogoPath)
 	tilde.Expand(&cfg.Website.BlogRepoPath)
+
 	return &cfg
 }
 
-func openConfigFile(paths []string) (*os.File, error) {
-	for _, p := range paths {
-		tilde.Expand(&p)
-		if file, err := os.Open(p); err == nil {
-			return file, nil
-		}
+// parseConfigFile parses the config.toml file.
+func parseConfigFile(p string, cfg *Config) error {
+	f, err := os.Open(p)
+	if f != nil && err == nil {
+		d := toml.NewDecoder(f)
+		err = d.Decode(cfg)
 	}
-	return nil, fmt.Errorf("the config.toml file is not found in the search paths '%v'", paths)
+	return err
 }
