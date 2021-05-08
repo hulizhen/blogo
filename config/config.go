@@ -3,6 +3,7 @@ package config
 import (
 	"fmt"
 	"os"
+	"sync"
 
 	"github.com/hulizhen/blogo/pkg/tilde"
 	"github.com/pelletier/go-toml"
@@ -41,15 +42,15 @@ var defaultConfigs = Config{
 
 var customConfigFilePath = "~/.blogo/config.toml"
 
+var once sync.Once
 var sharedConfig *Config
 
 // SharedConfig always returns a singleton of the Config instance
 // to share in the whole application.
-
 func SharedConfig() *Config {
-	if sharedConfig == nil {
+	once.Do(func() {
 		sharedConfig = new(customConfigFilePath)
-	}
+	})
 	return sharedConfig
 }
 
@@ -59,7 +60,6 @@ func new(p string) *Config {
 	cfg := defaultConfigs
 
 	// Parse the custom config.toml file.
-	tilde.Expand(&p)
 	err := parseConfigFile(p, &cfg)
 	if err != nil {
 		fmt.Printf("Failed to parse the custom configurations with error: %v, use the defaults.\n", err)
@@ -75,6 +75,7 @@ func new(p string) *Config {
 
 // parseConfigFile parses the config.toml file.
 func parseConfigFile(p string, cfg *Config) error {
+	tilde.Expand(&p)
 	f, err := os.Open(p)
 	if f != nil && err == nil {
 		d := toml.NewDecoder(f)
