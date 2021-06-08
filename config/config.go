@@ -3,6 +3,7 @@ package config
 import (
 	"fmt"
 	"os"
+	"reflect"
 	"sync"
 
 	"github.com/hulizhen/blogo/pkg/tilde"
@@ -12,9 +13,9 @@ import (
 type website struct {
 	Name         string `toml:"name"`
 	Description  string `toml:"description"`
-	FaviconPath  string `toml:"favicon_path"`
-	LogoPath     string `toml:"logo_path"`
-	BlogRepoPath string `toml:"blog_repo_path"`
+	FaviconPath  string `toml:"favicon_path" tilde:""`
+	LogoPath     string `toml:"logo_path" tilde:""`
+	BlogRepoPath string `toml:"blog_repo_path" tilde:""`
 }
 
 type server struct {
@@ -54,6 +55,23 @@ func SharedConfig() *Config {
 	return sharedConfig
 }
 
+// expandTildes expands tildes of the path strings in the Config instance recursively.
+func expandTildes(x interface{}) {
+	v := reflect.Indirect(reflect.ValueOf(x))
+	for i := 0; i < v.NumField(); i++ {
+		vf := v.Field(i)
+		tf := v.Type().Field(i)
+		_, ok := tf.Tag.Lookup("tilde")
+		if ok {
+			ptr := vf.Addr().Interface().(*string)
+			tilde.Expand(ptr)
+		}
+		if tf.Type.Kind() == reflect.Struct {
+			expandTildes(vf.Addr().Interface())
+		}
+	}
+}
+
 // new creates a Config with the default configurations,
 // which then overwritten by local custom config.toml file.
 func new(p string) *Config {
@@ -65,11 +83,7 @@ func new(p string) *Config {
 		fmt.Printf("Failed to parse the custom configurations with error: %v, use the defaults.\n", err)
 	}
 
-	// Expand the tilde in path strings.
-	tilde.Expand(&cfg.Website.FaviconPath)
-	tilde.Expand(&cfg.Website.LogoPath)
-	tilde.Expand(&cfg.Website.BlogRepoPath)
-
+	expandTildes(&cfg)
 	return &cfg
 }
 

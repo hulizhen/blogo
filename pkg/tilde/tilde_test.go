@@ -25,7 +25,7 @@ func TestExpandTilde(t *testing.T) {
 	for _, c := range cases {
 		Expand(&c.path)
 		if c.path != c.result {
-			t.Errorf("expand '%v' should result in '%v'", c.path, c.result)
+			t.Errorf("Expand '%v' should result in '%v'", c.path, c.result)
 		}
 	}
 }
