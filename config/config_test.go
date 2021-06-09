@@ -6,7 +6,7 @@ import (
 	"testing"
 )
 
-func TestNew(t *testing.T) {
+func TestParseConfigFile(t *testing.T) {
 	cases := []struct {
 		path string
 		port int
@@ -16,7 +16,8 @@ func TestNew(t *testing.T) {
 	}
 
 	for _, c := range cases {
-		cfg := new(c.path)
+		cfg := Config{Server: server{Port: 8000}}
+		_ = parseConfigFile(c.path, &cfg)
 		if cfg.Server.Port != c.port {
 			t.Errorf("The port in config should be '%d'", c.port)
 		}
