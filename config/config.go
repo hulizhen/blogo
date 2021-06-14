@@ -13,9 +13,9 @@ import (
 type website struct {
 	Name         string `toml:"name"`
 	Description  string `toml:"description"`
-	FaviconPath  string `toml:"favicon_path" tilde:""`
-	LogoPath     string `toml:"logo_path" tilde:""`
-	BlogRepoPath string `toml:"blog_repo_path" tilde:""`
+	FaviconPath  string `toml:"favicon_path" blogo:"tilde"`
+	LogoPath     string `toml:"logo_path" blogo:"tilde"`
+	BlogRepoPath string `toml:"blog_repo_path" blogo:"tilde"`
 }
 
 type server struct {
@@ -46,6 +46,7 @@ var customConfigFilePath = "~/.blogo/config.toml"
 var once sync.Once
 var sharedConfig *Config
 
+// TODO: Pass the config instance around instead of creating a global share instance.
 // SharedConfig always returns a singleton of the Config instance
 // to share in the whole application.
 func SharedConfig() *Config {
@@ -61,8 +62,8 @@ func expandTildes(x interface{}) {
 	for i := 0; i < v.NumField(); i++ {
 		vf := v.Field(i)
 		tf := v.Type().Field(i)
-		_, ok := tf.Tag.Lookup("tilde")
-		if ok {
+		value, ok := tf.Tag.Lookup("blogo")
+		if ok && value == "tilde" {
 			ptr := vf.Addr().Interface().(*string)
 			tilde.Expand(ptr)
 		}

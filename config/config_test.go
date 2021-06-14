@@ -27,17 +27,18 @@ func TestParseConfigFile(t *testing.T) {
 func TestExpandTildes(t *testing.T) {
 	type embeded struct {
 		InnerString string
-		InnerPath   string `tilde:""`
+		InnerPath   string `blogo:"tilde"`
 	}
 	cases := []struct {
 		Embeded     embeded
 		OuterString string
-		OuterPath   string `tilde:""`
+		OuterPath   string `blogo:"tilde"`
 	}{
-		{Embeded: embeded{
-			InnerString: "~/test/inner/string",
-			InnerPath:   "~/test/inner/path",
-		},
+		{
+			Embeded: embeded{
+				InnerString: "~/test/inner/string",
+				InnerPath:   "~/test/inner/path",
+			},
 			OuterString: "~/test/outer/string",
 			OuterPath:   "~/test/outer/path",
 		},
