@@ -24,6 +24,7 @@ type Article struct {
 	ID          int64     `gorm:"primarykey"`
 	Title       string    `gorm:"title"`
 	Content     string    `gorm:"content"`
+	Slug        string    `gorm:"slug"`
 	Categories  string    `gorm:"categories"`
 	Tags        string    `gorm:"tags"`
 	Draft       bool      `gorm:"draft"`
@@ -51,12 +52,7 @@ func NewArticle(base string, path string, entry fs.DirEntry) (article *Article, 
 	}
 
 	// Scan article to extract metadata and content.
-	f, err := os.Open(path)
-	if err != nil {
-		return
-	}
-	defer f.Close()
-	metadata, content := scanArticle(f)
+	metadata, content := scanArticle(path)
 	if err != nil {
 		return
 	}
@@ -88,7 +84,13 @@ func isWhitespace(c byte) bool {
 	return c == ' ' || c == '\t' || c == '\n' || c == '\r'
 }
 
-func scanArticle(f *os.File) (metadata string, content string) {
+func scanArticle(path string) (metadata string, content string) {
+	f, err := os.Open(path)
+	if err != nil {
+		return
+	}
+	defer f.Close()
+
 	hasMetadata := false
 	removed := false
 	scanner := bufio.NewScanner(f)

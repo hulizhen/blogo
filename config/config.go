@@ -89,15 +89,13 @@ func new(p string) *Config {
 }
 
 // parseConfigFile parses the config.toml file.
-func parseConfigFile(p string, cfg *Config) error {
+func parseConfigFile(p string, cfg *Config) (err error) {
 	tilde.Expand(&p)
 
 	f, err := os.Open(p)
-	if err != nil {
-		return err
+	if err == nil {
+		d := toml.NewDecoder(f)
+		err = d.Decode(cfg)
 	}
-
-	d := toml.NewDecoder(f)
-	err = d.Decode(cfg)
-	return err
+	return
 }
