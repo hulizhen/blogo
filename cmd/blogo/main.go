@@ -5,11 +5,35 @@ import (
 
 	"github.com/gin-gonic/gin"
 	"github.com/hulizhen/blogo/config"
+	"github.com/hulizhen/blogo/service/observer"
+	"gorm.io/driver/mysql"
+	"gorm.io/gorm"
+	"gorm.io/gorm/schema"
 )
 
 func main() {
 	cfg := config.SharedConfig()
 	addr := fmt.Sprintf(":%d", cfg.Server.Port)
+
+	// TODO: Move the database configuration into the config.toml file.
+	dsn := "hulz:xxxxxx@tcp(localhost:3306)/blogo"
+	db, err := gorm.Open(mysql.Open(dsn), &gorm.Config{
+		NamingStrategy: schema.NamingStrategy{
+			SingularTable: true,
+		},
+	})
+	if err != nil {
+		msg := fmt.Sprintf("Failed to open database with error: %v", err)
+		panic(msg)
+	}
+
+	// Start observing the repo changes.
+	observer, err := observer.NewRepoObserver(db, cfg.Website.BlogRepoPath)
+	if err != nil {
+		msg := fmt.Sprintf("Failed to create repo observer with error: %v", err)
+		panic(msg)
+	}
+	observer.Start()
 
 	e := gin.Default()
 	e.LoadHTMLGlob("template/*")

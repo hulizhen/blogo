@@ -47,6 +47,7 @@ func TestScanArticle(t *testing.T) {
 	path := "/tmp/blogo-test-scan-article.md"
 	f, err := os.Create(path)
 	if err != nil {
+		t.Errorf("Failed to create tmp file for testing.")
 		return
 	}
 	defer func() {

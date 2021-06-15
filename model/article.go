@@ -9,7 +9,16 @@ import (
 	"strings"
 	"syscall"
 	"time"
+
+	"github.com/pelletier/go-toml"
 )
+
+type articleMetadata struct {
+	Title string
+	Tags  []string
+	Draft bool
+	Date  time.Time
+}
 
 type Article struct {
 	ID          int64     `gorm:"primarykey"`
@@ -27,15 +36,7 @@ const metadataDelimiter = "+++"
 func NewArticle(base string, path string, entry fs.DirEntry) (article *Article, err error) {
 	// Get categories.
 	parent := filepath.Dir(path)
-	trimmedPath := strings.TrimPrefix(parent, path)
-	strs := strings.Split(trimmedPath, "/")
-	category := ""
-	for _, str := range strs {
-		if len(str) > 0 {
-			category = str
-			break
-		}
-	}
+	categories := strings.TrimLeft(strings.TrimPrefix(parent, base), "/")
 
 	// Generate ID with birth timestamp.
 	id := int64(0)
@@ -49,23 +50,38 @@ func NewArticle(base string, path string, entry fs.DirEntry) (article *Article, 
 		id = stat.Birthtimespec.Nano()
 	}
 
+	// Scan article to extract metadata and content.
 	f, err := os.Open(path)
 	if err != nil {
 		return
 	}
 	defer f.Close()
-	_, content := scanArticle(f)
+	metadata, content := scanArticle(f)
 	if err != nil {
 		return
 	}
 
+	// Parse metadata and fill article.
 	article = &Article{
-		ID:      id,
-		Content: content,
+		ID:         id,
+		Content:    content,
+		Categories: categories,
 	}
+	am := &articleMetadata{}
+	err = toml.Unmarshal([]byte(metadata), am)
+	if err != nil {
+		return
+	}
+	article.fillMetadata(am)
 
-	fmt.Printf("hulizhen --- id: %v, category: %v\n", id, category)
 	return
+}
+
+func (a *Article) fillMetadata(metadata *articleMetadata) {
+	a.Title = metadata.Title
+	a.Tags = strings.Join(metadata.Tags, ",")
+	a.Draft = metadata.Draft
+	a.PublishedTS = metadata.Date
 }
 
 func isWhitespace(c byte) bool {
