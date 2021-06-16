@@ -23,14 +23,14 @@ func main() {
 		},
 	})
 	if err != nil {
-		msg := fmt.Sprintf("Failed to open database with error: %v", err)
+		msg := fmt.Sprintf("Failed to open database with error: %v.", err)
 		panic(msg)
 	}
 
 	// Start observing the repo changes.
 	observer, err := observer.NewRepoObserver(db, cfg.Website.BlogRepoPath)
 	if err != nil {
-		msg := fmt.Sprintf("Failed to create repo observer with error: %v", err)
+		msg := fmt.Sprintf("Failed to create repo observer with error: %v.", err)
 		panic(msg)
 	}
 	observer.Start()

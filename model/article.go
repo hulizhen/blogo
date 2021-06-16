@@ -14,31 +14,32 @@ import (
 )
 
 type articleMetadata struct {
-	Title string
-	Tags  []string
-	Draft bool
-	Date  time.Time
+	Title      string
+	Categories []string
+	Tags       []string
+	Draft      bool
+	Date       time.Time
 }
 
 type Article struct {
 	ID          int64     `gorm:"primarykey"`
+	Slug        string    `gorm:"slug"`
 	Title       string    `gorm:"title"`
 	Content     string    `gorm:"content"`
-	Slug        string    `gorm:"slug"`
 	Categories  string    `gorm:"categories"`
 	Tags        string    `gorm:"tags"`
 	Draft       bool      `gorm:"draft"`
 	PublishedTS time.Time `gorm:"published_ts"`
 }
 
-const metadataDelimiter = "+++"
+const (
+	metadataDelimiter = "+++"
+	categoryDelimiter = "/"
+	tagDelimiter      = ","
+)
 
 // New creates a Article instance with provided repo path `base`, article `path` and article `entry`.
 func NewArticle(base string, path string, entry fs.DirEntry) (article *Article, err error) {
-	// Get categories.
-	parent := filepath.Dir(path)
-	categories := strings.TrimLeft(strings.TrimPrefix(parent, base), "/")
-
 	// Generate ID with birth timestamp.
 	id := int64(0)
 	info, err := entry.Info()
@@ -52,32 +53,37 @@ func NewArticle(base string, path string, entry fs.DirEntry) (article *Article, 
 	}
 
 	// Scan article to extract metadata and content.
-	metadata, content := scanArticle(path)
+	m, c := scanArticle(path)
 	if err != nil {
 		return
 	}
 
+	// Get URL slug by stripping extension of the file basename.
+	basename := filepath.Base(path)
+	slug := strings.TrimSuffix(basename, filepath.Ext(basename))
+
 	// Parse metadata and fill article.
 	article = &Article{
-		ID:         id,
-		Content:    content,
-		Categories: categories,
+		ID:      id,
+		Slug:    slug,
+		Content: c,
 	}
 	am := &articleMetadata{}
-	err = toml.Unmarshal([]byte(metadata), am)
+	err = toml.Unmarshal([]byte(m), am)
 	if err != nil {
 		return
 	}
-	article.fillMetadata(am)
+	article.updateMetadata(am)
 
 	return
 }
 
-func (a *Article) fillMetadata(metadata *articleMetadata) {
-	a.Title = metadata.Title
-	a.Tags = strings.Join(metadata.Tags, ",")
-	a.Draft = metadata.Draft
-	a.PublishedTS = metadata.Date
+func (a *Article) updateMetadata(am *articleMetadata) {
+	a.Title = am.Title
+	a.Categories = strings.Join(am.Categories, categoryDelimiter)
+	a.Tags = strings.Join(am.Tags, tagDelimiter)
+	a.Draft = am.Draft
+	a.PublishedTS = am.Date
 }
 
 func isWhitespace(c byte) bool {

@@ -31,7 +31,7 @@ func NewRepoObserver(db *gorm.DB, repoPath string) (*RepoObserver, error) {
 func (o *RepoObserver) Start() {
 	// Walk the article file tree in repo and parse them.
 	articlePath := path.Join(o.repoPath, "articles")
-	filepath.WalkDir(articlePath, func(p string, d fs.DirEntry, err error) error {
+	filepath.WalkDir(articlePath, func(path string, d fs.DirEntry, err error) error {
 		basename := d.Name()
 		if err != nil ||
 			d.IsDir() || // Exclude directories
@@ -40,7 +40,7 @@ func (o *RepoObserver) Start() {
 			return nil
 		}
 
-		_, err = model.NewArticle(o.repoPath, p, d)
+		_, err = model.NewArticle(o.repoPath, path, d)
 
 		return err
 	})
