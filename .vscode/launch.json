@@ -10,7 +10,14 @@
       "request": "launch",
       "mode": "auto",
       "program": "${workspaceFolder}/cmd/blogo/main.go",
-      "cwd": "${workspaceFolder}"
+      "cwd": "${workspaceFolder}",
+      "dlvLoadConfig": {
+        "followPointers": true,
+        "maxVariableRecurse": 1,
+        "maxStringLen": 500,
+        "maxArrayValues": 64,
+        "maxStructFields": -1
+      }
     }
   ]
 }
