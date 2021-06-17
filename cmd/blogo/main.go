@@ -12,7 +12,7 @@ import (
 )
 
 func main() {
-	cfg := config.SharedConfig()
+	cfg := config.New(config.ConfigFilePath)
 	addr := fmt.Sprintf(":%d", cfg.Server.Port)
 
 	// TODO: Move the database configuration into the config.toml file.

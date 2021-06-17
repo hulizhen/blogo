@@ -4,7 +4,6 @@ import (
 	"fmt"
 	"os"
 	"reflect"
-	"sync"
 
 	"github.com/hulizhen/blogo/pkg/tilde"
 	"github.com/pelletier/go-toml"
@@ -41,20 +40,7 @@ var defaultConfigs = Config{
 	},
 }
 
-var customConfigFilePath = "~/.blogo/config.toml"
-
-var once sync.Once
-var sharedConfig *Config
-
-// TODO: Pass the config instance around instead of creating a global share instance.
-// SharedConfig always returns a singleton of the Config instance
-// to share in the whole application.
-func SharedConfig() *Config {
-	once.Do(func() {
-		sharedConfig = new(customConfigFilePath)
-	})
-	return sharedConfig
-}
+var ConfigFilePath = "~/.blogo/config.toml"
 
 // expandTildes expands tildes of the path strings in the Config instance recursively.
 func expandTildes(x interface{}) {
@@ -73,9 +59,9 @@ func expandTildes(x interface{}) {
 	}
 }
 
-// new creates a Config with the default configurations,
+// New creates a Config with the default configurations,
 // which then overwritten by local custom config.toml file.
-func new(p string) *Config {
+func New(p string) *Config {
 	cfg := defaultConfigs
 
 	// Parse the custom config.toml file.
