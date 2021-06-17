@@ -40,7 +40,10 @@ func (o *RepoObserver) Start() {
 			return nil
 		}
 
-		_, err = model.NewArticle(o.repoPath, path, d)
+		article, err := model.NewArticle(o.repoPath, path, d)
+		if err == nil {
+			o.db.Create(article)
+		}
 
 		return err
 	})
