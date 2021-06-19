@@ -10,7 +10,7 @@ import (
 )
 
 type website struct {
-	Name         string `toml:"name"`
+	Title        string `toml:"title"`
 	Description  string `toml:"description"`
 	FaviconPath  string `toml:"favicon_path" blogo:"tilde"`
 	LogoPath     string `toml:"logo_path" blogo:"tilde"`
@@ -29,7 +29,7 @@ type Config struct {
 
 var defaultConfigs = Config{
 	Website: website{
-		Name:         "Blogo",
+		Title:        "Blogo",
 		Description:  "A blog engine built with Go.",
 		FaviconPath:  "~/.blogo/favicon.ico",
 		LogoPath:     "~/.blogo/logo.png",
