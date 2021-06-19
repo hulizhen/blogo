@@ -15,8 +15,14 @@ func main() {
 	cfg := config.New(config.ConfigFilePath)
 	addr := fmt.Sprintf(":%d", cfg.Server.Port)
 
-	// TODO: Move the database configuration into the config.toml file.
-	dsn := "hulz:xxxxxx@tcp(localhost:3306)/blogo?charset=utf8mb4&parseTime=true&loc=Local"
+	dsn := fmt.Sprintf(
+		"%v:%v@tcp(%v:%d)/%v?charset=utf8mb4&parseTime=true&loc=Local",
+		cfg.Mysql.Username,
+		cfg.Mysql.Password,
+		cfg.Mysql.Address,
+		cfg.Mysql.Port,
+		cfg.Mysql.Database,
+	)
 	db, err := gorm.Open(mysql.Open(dsn), &gorm.Config{
 		NamingStrategy: schema.NamingStrategy{
 			SingularTable: true,

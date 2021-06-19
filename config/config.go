@@ -21,10 +21,19 @@ type server struct {
 	Port int `toml:"port"`
 }
 
+type mysql struct {
+	Address  string `toml:"address"`
+	Port     int    `toml:"port"`
+	Database string `toml:"database"`
+	Username string `toml:"username"`
+	Password string `toml:"password"`
+}
+
 // Config provides the configurations for the application.
 type Config struct {
 	Website website `toml:"website"`
 	Server  server  `toml:"server"`
+	Mysql   mysql   `toml:"mysql"`
 }
 
 var defaultConfigs = Config{
@@ -37,6 +46,11 @@ var defaultConfigs = Config{
 	},
 	Server: server{
 		Port: 8000,
+	},
+	Mysql: mysql{
+		Address:  "localhost",
+		Port:     3306,
+		Database: "blogo",
 	},
 }
 
