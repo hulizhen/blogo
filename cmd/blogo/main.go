@@ -20,7 +20,7 @@ func main() {
 		"%v:%v@tcp(%v:%d)/%v?charset=utf8mb4&parseTime=true&loc=Local",
 		cfg.Mysql.Username,
 		cfg.Mysql.Password,
-		cfg.Mysql.Address,
+		cfg.Mysql.Host,
 		cfg.Mysql.Port,
 		cfg.Mysql.Database,
 	)

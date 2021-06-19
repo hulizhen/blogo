@@ -27,6 +27,7 @@ type Article struct {
 	Slug        string    `gorm:"slug"`
 	Title       string    `gorm:"title"`
 	Content     string    `gorm:"content"`
+	Preview     string    `gorm:"preview"`
 	Categories  string    `gorm:"categories"`
 	Tags        string    `gorm:"tags"`
 	Top         bool      `gorm:"top"`
@@ -35,7 +36,8 @@ type Article struct {
 }
 
 const (
-	metadataDelimiter = "+++"
+	metadataDelimiter = "+++\n"
+	previewDelimiter  = "^^^\n"
 	categoryDelimiter = "/"
 	tagDelimiter      = ","
 )
@@ -60,6 +62,15 @@ func NewArticle(base string, path string, entry fs.DirEntry) (article *Article, 
 		return
 	}
 
+	// Extract preview from content.
+	preview := ""
+	count := 3
+	strs := strings.SplitN(c, previewDelimiter, count)
+	if len(strs) == count {
+		preview = strings.TrimSpace(strs[1])
+		c = strs[0] + strs[1] + strs[2]
+	}
+
 	// Get URL slug by stripping extension of the file basename.
 	basename := filepath.Base(path)
 	slug := strings.TrimSuffix(basename, filepath.Ext(basename))
@@ -69,6 +80,7 @@ func NewArticle(base string, path string, entry fs.DirEntry) (article *Article, 
 		ID:      id,
 		Slug:    slug,
 		Content: c,
+		Preview: preview,
 	}
 	am := &articleMetadata{}
 	err = toml.Unmarshal([]byte(m), am)
@@ -80,6 +92,7 @@ func NewArticle(base string, path string, entry fs.DirEntry) (article *Article, 
 	return
 }
 
+// updateMetadata updates the article model with the extracted metadata.
 func (a *Article) updateMetadata(am *articleMetadata) {
 	a.Title = am.Title
 	a.Categories = strings.Join(am.Categories, categoryDelimiter)
@@ -127,8 +140,9 @@ func scanArticle(path string) (metadata string, content string) {
 
 		// Extract metadata with delimiter.
 		// The metadata surrounded by delimiter should be at the beginning of article, with some whitespaces, if any.
-		strs := strings.SplitN(string(data), metadataDelimiter, 3)
-		if len(strs) == 3 && len(strs[0]) == 0 {
+		count := 3
+		strs := strings.SplitN(string(data), metadataDelimiter, count)
+		if len(strs) == count && len(strs[0]) == 0 {
 			hasMetadata = true
 			return len(strs[1]) + 2*len(metadataDelimiter), []byte(strs[1]), nil
 		} else {

@@ -22,7 +22,7 @@ type server struct {
 }
 
 type mysql struct {
-	Address  string `toml:"address"`
+	Host     string `toml:"host"`
 	Port     int    `toml:"port"`
 	Database string `toml:"database"`
 	Username string `toml:"username"`
@@ -48,7 +48,7 @@ var defaultConfigs = Config{
 		Port: 8000,
 	},
 	Mysql: mysql{
-		Address:  "localhost",
+		Host:     "localhost",
 		Port:     3306,
 		Database: "blogo",
 	},
