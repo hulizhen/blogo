@@ -40,7 +40,7 @@ var defaultConfigs = Config{
 	},
 }
 
-var ConfigFilePath = "~/.blogo/config.toml"
+const ConfigFilePath = "~/.blogo/config.toml"
 
 // expandTildes expands tildes of the path strings in the Config instance recursively.
 func expandTildes(x interface{}) {
@@ -80,6 +80,8 @@ func parseConfigFile(p string, cfg *Config) (err error) {
 
 	f, err := os.Open(p)
 	if err == nil {
+		defer f.Close()
+
 		d := toml.NewDecoder(f)
 		err = d.Decode(cfg)
 	}
