@@ -14,11 +14,12 @@ import (
 )
 
 type articleMetadata struct {
-	Title      string
-	Categories []string
-	Tags       []string
-	Draft      bool
-	Date       time.Time
+	Title      string    `toml:"title"`
+	Categories []string  `toml:"categories"`
+	Tags       []string  `toml:"tags"`
+	Top        bool      `toml:"top"`
+	Draft      bool      `toml:"drfat"`
+	Date       time.Time `toml:"date"`
 }
 
 type Article struct {
@@ -28,6 +29,7 @@ type Article struct {
 	Content     string    `gorm:"content"`
 	Categories  string    `gorm:"categories"`
 	Tags        string    `gorm:"tags"`
+	Top         bool      `gorm:"top"`
 	Draft       bool      `gorm:"draft"`
 	PublishedTS time.Time `gorm:"published_ts"`
 }
