@@ -8,6 +8,7 @@ import (
 	"github.com/hulizhen/blogo/service/observer"
 	"gorm.io/driver/mysql"
 	"gorm.io/gorm"
+	"gorm.io/gorm/logger"
 	"gorm.io/gorm/schema"
 )
 
@@ -27,6 +28,7 @@ func main() {
 		NamingStrategy: schema.NamingStrategy{
 			SingularTable: true,
 		},
+		Logger: logger.Default.LogMode(logger.Warn),
 	})
 	if err != nil {
 		msg := fmt.Sprintf("Failed to open database with error: %v.", err)

@@ -84,6 +84,7 @@ func (a *Article) updateMetadata(am *articleMetadata) {
 	a.Title = am.Title
 	a.Categories = strings.Join(am.Categories, categoryDelimiter)
 	a.Tags = strings.Join(am.Tags, tagDelimiter)
+	a.Top = am.Top
 	a.Draft = am.Draft
 	a.PublishedTS = am.Date
 }
