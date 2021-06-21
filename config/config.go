@@ -1,7 +1,7 @@
 package config
 
 import (
-	"fmt"
+	"log"
 	"os"
 	"reflect"
 
@@ -81,7 +81,7 @@ func New(p string) *Config {
 	// Parse the custom config.toml file.
 	err := parseConfigFile(p, &cfg)
 	if err != nil {
-		fmt.Printf("Failed to parse the custom configurations with error: %v, use the defaults.\n", err)
+		log.Printf("Failed to parse the custom configurations with error: %v, use the defaults.\n", err)
 	}
 
 	expandTildes(&cfg)

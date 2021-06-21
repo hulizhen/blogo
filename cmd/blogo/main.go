@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"log"
 
 	"github.com/gin-gonic/gin"
 	"github.com/hulizhen/blogo/config"
@@ -31,15 +32,13 @@ func main() {
 		Logger: logger.Default.LogMode(logger.Warn),
 	})
 	if err != nil {
-		msg := fmt.Sprintf("Failed to open database with error: %v.", err)
-		panic(msg)
+		log.Panicf("Failed to open database with error: %v.", err)
 	}
 
 	// Start observing the repo changes.
 	observer, err := observer.NewRepoObserver(db, cfg.Website.BlogRepoPath)
 	if err != nil {
-		msg := fmt.Sprintf("Failed to create repo observer with error: %v.", err)
-		panic(msg)
+		log.Panicf("Failed to create repo observer with error: %v.", err)
 	}
 	observer.Start()
 

@@ -2,8 +2,8 @@ package model
 
 import (
 	"bufio"
-	"fmt"
 	"io/fs"
+	"log"
 	"os"
 	"path/filepath"
 	"strings"
@@ -50,7 +50,7 @@ func NewArticle(base string, path string, entry fs.DirEntry) (article *Article, 
 	if err == nil {
 		stat, ok := info.Sys().(*syscall.Stat_t)
 		if !ok {
-			err = fmt.Errorf("failed to get stat information for article path: %v", path)
+			log.Printf("failed to get stat information for article path: %v", path)
 			return
 		}
 		id = stat.Birthtimespec.Nano()
