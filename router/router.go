@@ -10,16 +10,16 @@ import (
 
 	"github.com/gin-contrib/multitemplate"
 	"github.com/gin-gonic/gin"
-	"gorm.io/gorm"
+	"github.com/jmoiron/sqlx"
 )
 
 type Router struct {
 	engine *gin.Engine
 	config *config.Config
-	db     *gorm.DB
+	db     *sqlx.DB
 }
 
-func New(cfg *config.Config, db *gorm.DB) *Router {
+func New(cfg *config.Config, db *sqlx.DB) *Router {
 	return &Router{engine: gin.Default(), config: cfg, db: db}
 }
 

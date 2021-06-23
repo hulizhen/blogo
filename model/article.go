@@ -23,16 +23,16 @@ type articleMetadata struct {
 }
 
 type Article struct {
-	ID          int64     `gorm:"primarykey"`
-	Slug        string    `gorm:"slug"`
-	Title       string    `gorm:"title"`
-	Content     string    `gorm:"content"`
-	Preview     string    `gorm:"preview"`
-	Categories  string    `gorm:"categories"`
-	Tags        string    `gorm:"tags"`
-	Top         bool      `gorm:"top"`
-	Draft       bool      `gorm:"draft"`
-	PublishedTS time.Time `gorm:"published_ts"`
+	ID          int64     `db:"id"`
+	Slug        string    `db:"slug"`
+	Title       string    `db:"title"`
+	Content     string    `db:"content"`
+	Preview     string    `db:"preview"`
+	Categories  string    `db:"categories"`
+	Tags        string    `db:"tags"`
+	Top         bool      `db:"top"`
+	Draft       bool      `db:"draft"`
+	PublishedTS time.Time `db:"published_ts"`
 }
 
 const (

@@ -8,10 +8,8 @@ import (
 	"blogo/router"
 	"blogo/service/observer"
 
-	"gorm.io/driver/mysql"
-	"gorm.io/gorm"
-	"gorm.io/gorm/logger"
-	"gorm.io/gorm/schema"
+	_ "github.com/go-sql-driver/mysql"
+	"github.com/jmoiron/sqlx"
 )
 
 func main() {
@@ -25,12 +23,7 @@ func main() {
 		cfg.Mysql.Port,
 		cfg.Mysql.Database,
 	)
-	db, err := gorm.Open(mysql.Open(dsn), &gorm.Config{
-		NamingStrategy: schema.NamingStrategy{
-			SingularTable: true,
-		},
-		Logger: logger.Default.LogMode(logger.Warn),
-	})
+	db, err := sqlx.Connect("mysql", dsn)
 	if err != nil {
 		log.Panicf("Failed to open database with error: %v.", err)
 	}

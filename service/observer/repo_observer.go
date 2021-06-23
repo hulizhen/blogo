@@ -9,15 +9,15 @@ import (
 
 	"blogo/model"
 
-	"gorm.io/gorm"
+	"github.com/jmoiron/sqlx"
 )
 
 type RepoObserver struct {
-	db       *gorm.DB
+	db       *sqlx.DB
 	repoPath string
 }
 
-func NewRepoObserver(db *gorm.DB, repoPath string) (*RepoObserver, error) {
+func NewRepoObserver(db *sqlx.DB, repoPath string) (*RepoObserver, error) {
 	if _, err := os.Stat(repoPath); os.IsNotExist(err) {
 		return nil, err
 	}
@@ -43,9 +43,15 @@ func (o *RepoObserver) Run() {
 
 		article, err := model.NewArticle(o.repoPath, p, d)
 		if err == nil {
-			o.db.Save(article)
+			_, err = o.db.NamedExec(`
+			INSERT INTO article(
+				id, slug, title, content, preview, categories, tags, top, draft, published_ts
+			) VALUES(
+				:id, :slug, :title, :content, :preview, :categories, :tags, :top, :draft, :published_ts
+			) ON DUPLICATE KEY UPDATE
+				id = :id, slug = :slug, title = :title, content = :content, preview = :preview, categories = :categories, tags = :tags, top = :top, draft = :draft, published_ts = :published_ts
+			`, article)
 		}
-
 		return err
 	})
 
