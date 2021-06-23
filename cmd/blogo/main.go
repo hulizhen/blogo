@@ -4,9 +4,10 @@ import (
 	"fmt"
 	"log"
 
-	"github.com/hulizhen/blogo/config"
-	"github.com/hulizhen/blogo/router"
-	"github.com/hulizhen/blogo/service/observer"
+	"blogo/config"
+	"blogo/router"
+	"blogo/service/observer"
+
 	"gorm.io/driver/mysql"
 	"gorm.io/gorm"
 	"gorm.io/gorm/logger"

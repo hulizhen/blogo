@@ -6,9 +6,10 @@ import (
 	"path/filepath"
 	"strings"
 
+	"blogo/config"
+
 	"github.com/gin-contrib/multitemplate"
 	"github.com/gin-gonic/gin"
-	"github.com/hulizhen/blogo/config"
 	"gorm.io/gorm"
 )
 

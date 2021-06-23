@@ -7,7 +7,8 @@ import (
 	"path/filepath"
 	"strings"
 
-	"github.com/hulizhen/blogo/model"
+	"blogo/model"
+
 	"gorm.io/gorm"
 )
 
