@@ -23,8 +23,8 @@ func New(cfg *config.Config, db *gorm.DB) *Router {
 }
 
 func (r *Router) Run() {
-	e := r.engine
 	cfg := r.config
+	e := r.engine
 
 	e.Static("/static", "./static")
 	e.StaticFile("/favicon.ico", cfg.Website.FaviconPath)
