@@ -27,8 +27,8 @@ func NewRepoObserver(db *gorm.DB, repoPath string) (*RepoObserver, error) {
 	}, nil
 }
 
-// Start parses the articles in repo once and then starts observing the repo changes.
-func (o *RepoObserver) Start() {
+// Run parses the articles in repo once and then starts observing the repo changes.
+func (o *RepoObserver) Run() {
 	// Walk the article file tree in repo and parse them.
 	articlePath := path.Join(o.repoPath, "articles")
 	filepath.WalkDir(articlePath, func(p string, d fs.DirEntry, err error) error {

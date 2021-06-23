@@ -15,6 +15,7 @@ type website struct {
 	FaviconPath  string `toml:"favicon_path" blogo:"tilde"`
 	LogoPath     string `toml:"logo_path" blogo:"tilde"`
 	BlogRepoPath string `toml:"blog_repo_path" blogo:"tilde"`
+	TemplatePath string `toml:"template_path" blogo:"tilde"`
 }
 
 type server struct {
@@ -42,7 +43,8 @@ var defaultConfigs = Config{
 		Description:  "A blog engine built with Go.",
 		FaviconPath:  "~/.blogo/favicon.ico",
 		LogoPath:     "~/.blogo/logo.png",
-		BlogRepoPath: "~/.blogo/blog",
+		BlogRepoPath: "~/.blogo/blog/",
+		TemplatePath: "./template/",
 	},
 	Server: server{
 		Port: 8000,
