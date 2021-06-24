@@ -15,6 +15,7 @@ import (
 type website struct {
 	Title        string `toml:"title"`
 	Description  string `toml:"description"`
+	Author       string `toml:"author"`
 	FaviconPath  string `toml:"favicon_path" blogo:"tilde"`
 	LogoPath     string `toml:"logo_path" blogo:"tilde"`
 	BlogRepoPath string `toml:"blog_repo_path" blogo:"tilde"`
@@ -44,6 +45,7 @@ var defaultConfigs = Config{
 	Website: website{
 		Title:        "Blogo",
 		Description:  "A blog engine built with Go.",
+		Author:       "Anonymous",
 		FaviconPath:  "~/.blogo/favicon.ico",
 		LogoPath:     "~/.blogo/logo.png",
 		BlogRepoPath: "~/.blogo/blog/",

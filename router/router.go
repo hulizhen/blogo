@@ -67,3 +67,16 @@ func (r *Router) loadTemplates() {
 
 	r.engine.HTMLRender = render
 }
+
+func (r *Router) templateData(data gin.H) gin.H {
+	base := gin.H{
+		"WebsiteTitle":  r.config.Website.Title,
+		"WebsiteAuthor": r.config.Website.Author,
+	}
+	for k, v := range base {
+		if _, found := data[k]; !found {
+			data[k] = v
+		}
+	}
+	return data
+}
