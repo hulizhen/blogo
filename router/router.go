@@ -60,8 +60,11 @@ func (r *Router) loadTemplates() {
 	}
 
 	for _, page := range pages {
+		// Make a copy of the 'bases' slice to avoid sharing and modifing the same backing array.
+		cp := make([]string, len(bases))
+		copy(cp, bases)
+		files := append(cp, page)
 		name := strings.TrimSuffix(filepath.Base(page), filepath.Ext(page))
-		files := append(bases, page)
 		render.AddFromFiles(name, files...)
 	}
 

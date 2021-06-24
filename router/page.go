@@ -7,9 +7,13 @@ import (
 )
 
 func (r *Router) getHome(c *gin.Context) {
-	r.store.ArticleStore.ReadArticles()
+	a, err := r.store.ArticleStore.ReadArticles()
+	if err != nil {
+		c.AbortWithStatus(http.StatusInternalServerError)
+		return
+	}
 	c.HTML(http.StatusOK, "home", r.templateData(gin.H{
-		"Content": "This is HOME page.",
+		"Articles": a,
 	}))
 }
 

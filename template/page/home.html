@@ -1,3 +1,9 @@
 {{define "main"}}
-<p>{{.Content}}</p>
+<ul>
+  {{range .Articles}}
+  <li>
+    <div>{{.Title}}</div>
+  </li>
+  {{end}}
+</ul>
 {{end}}
