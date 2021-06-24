@@ -183,7 +183,7 @@ func NewArticleStore(db *sqlx.DB, cfg *config.Config) (*ArticleStore, error) {
 
 	// Walk the article file tree in repo and parse them.
 	articlePath := path.Join(repoPath, "articles")
-	filepath.WalkDir(articlePath, func(p string, d fs.DirEntry, err error) error {
+	err := filepath.WalkDir(articlePath, func(p string, d fs.DirEntry, err error) error {
 		basename := d.Name()
 		if err != nil ||
 			d.IsDir() || // Exclude directories
@@ -199,12 +199,32 @@ func NewArticleStore(db *sqlx.DB, cfg *config.Config) (*ArticleStore, error) {
 					id, slug, title, content, preview, categories, tags, top, draft, published_ts
 				) VALUES(
 					:id, :slug, :title, :content, :preview, :categories, :tags, :top, :draft, :published_ts
-				)`, article)
+				)`,
+				article,
+			)
 		}
 		return err
 	})
 
 	// TODO: Start listening repo webhook to rescan the articles.
 
-	return &ArticleStore{db: db}, nil
+	return &ArticleStore{db: db}, err
+}
+
+func (s *ArticleStore) ReadArticles() ([]*Article, error) {
+	rows, err := s.db.Queryx(`SELECT * FROM article`)
+	if err != nil {
+		return nil, err
+	}
+
+	var articles []*Article
+	for rows.Next() {
+		var article Article
+		err = rows.StructScan(&article)
+		if err != nil {
+			return nil, err
+		}
+		articles = append(articles, &article)
+	}
+	return articles, nil
 }
