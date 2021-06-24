@@ -1,15 +1,19 @@
 package model
 
 import (
+	"blogo/config"
 	"bufio"
 	"io/fs"
 	"log"
 	"os"
+	"path"
 	"path/filepath"
 	"strings"
 	"syscall"
+	"text/scanner"
 	"time"
 
+	"github.com/jmoiron/sqlx"
 	"github.com/pelletier/go-toml"
 )
 
@@ -57,7 +61,7 @@ func NewArticle(base string, path string, entry fs.DirEntry) (article *Article, 
 	}
 
 	// Scan article to extract metadata and content.
-	m, c := scanArticle(path)
+	metadata, content := scanArticle(path)
 	if err != nil {
 		return
 	}
@@ -65,25 +69,27 @@ func NewArticle(base string, path string, entry fs.DirEntry) (article *Article, 
 	// Extract preview from content.
 	preview := ""
 	count := 3
-	strs := strings.SplitN(c, previewDelimiter, count)
+	strs := strings.SplitN(content, previewDelimiter, count)
 	if len(strs) == count {
 		preview = strings.TrimSpace(strs[1])
-		c = strs[0] + strs[1] + strs[2]
+		content = strs[0] + strs[1] + strs[2]
 	}
 
 	// Get URL slug by stripping extension of the file basename.
 	basename := filepath.Base(path)
 	slug := strings.TrimSuffix(basename, filepath.Ext(basename))
 
+	// TODO: Parse the content with Markdown parser.
+
 	// Parse metadata and fill article.
 	article = &Article{
 		ID:      id,
 		Slug:    slug,
-		Content: c,
+		Content: content,
 		Preview: preview,
 	}
 	am := &articleMetadata{}
-	err = toml.Unmarshal([]byte(m), am)
+	err = toml.Unmarshal([]byte(metadata), am)
 	if err != nil {
 		return
 	}
@@ -103,9 +109,10 @@ func (a *Article) updateMetadata(am *articleMetadata) {
 }
 
 func isWhitespace(c byte) bool {
-	return c == ' ' || c == '\t' || c == '\n' || c == '\r'
+	return scanner.GoWhitespace&(1<<c) != 0
 }
 
+// scanArticle scans the *.md article file and extracts the metadata and content.
 func scanArticle(path string) (metadata string, content string) {
 	f, err := os.Open(path)
 	if err != nil {
@@ -162,4 +169,45 @@ func scanArticle(path string) (metadata string, content string) {
 		}
 	}
 	return
+}
+
+type ArticleStore struct {
+	db *sqlx.DB
+}
+
+func NewArticleStore(db *sqlx.DB, cfg *config.Config) (*ArticleStore, error) {
+	repoPath := cfg.Website.BlogRepoPath
+	if _, err := os.Stat(repoPath); os.IsNotExist(err) {
+		return nil, err
+	}
+
+	// Walk the article file tree in repo and parse them.
+	articlePath := path.Join(repoPath, "articles")
+	filepath.WalkDir(articlePath, func(p string, d fs.DirEntry, err error) error {
+		basename := d.Name()
+		if err != nil ||
+			d.IsDir() || // Exclude directories
+			strings.HasPrefix(basename, ".") || // Exclude hidden files
+			filepath.Ext(basename) != ".md" { // Exclude non-markdown files
+			return nil
+		}
+
+		article, err := NewArticle(repoPath, p, d)
+		if err == nil {
+			_, err = db.NamedExec(`
+				INSERT INTO article(
+					id, slug, title, content, preview, categories, tags, top, draft, published_ts
+				) VALUES(
+					:id, :slug, :title, :content, :preview, :categories, :tags, :top, :draft, :published_ts
+				) ON DUPLICATE KEY UPDATE
+					id = :id, slug = :slug, title = :title, content = :content, preview = :preview,
+					categories = :categories, tags = :tags, top = :top, draft = :draft, published_ts = :published_ts
+				`, article)
+		}
+		return err
+	})
+
+	// TODO: Start listening repo webhook to rescan the articles.
+
+	return &ArticleStore{db: db}, nil
 }

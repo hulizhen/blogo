@@ -7,20 +7,20 @@ import (
 	"strings"
 
 	"blogo/config"
+	"blogo/store"
 
 	"github.com/gin-contrib/multitemplate"
 	"github.com/gin-gonic/gin"
-	"github.com/jmoiron/sqlx"
 )
 
 type Router struct {
 	engine *gin.Engine
 	config *config.Config
-	db     *sqlx.DB
+	store  *store.Store
 }
 
-func New(cfg *config.Config, db *sqlx.DB) *Router {
-	return &Router{engine: gin.Default(), config: cfg, db: db}
+func New(cfg *config.Config, store *store.Store) *Router {
+	return &Router{engine: gin.Default(), config: cfg, store: store}
 }
 
 func (r *Router) Run() {

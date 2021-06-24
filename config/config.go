@@ -1,6 +1,8 @@
 package config
 
 import (
+	"errors"
+	"io/fs"
 	"log"
 	"os"
 	"reflect"
@@ -78,29 +80,33 @@ func expandTildes(x interface{}) {
 
 // New creates a Config with the default configurations,
 // which then overwritten by local custom config.toml file.
-func New(p string) *Config {
+func New(p string) (*Config, error) {
 	cfg := defaultConfigs
 
 	// Parse the custom config.toml file.
 	err := parseConfigFile(p, &cfg)
 	if err != nil {
-		log.Printf("Failed to parse the custom configurations with error: %v, use the defaults.\n", err)
+		return nil, err
 	}
 
 	expandTildes(&cfg)
-	return &cfg
+	return &cfg, nil
 }
 
 // parseConfigFile parses the config.toml file.
-func parseConfigFile(p string, cfg *Config) (err error) {
+func parseConfigFile(p string, cfg *Config) error {
 	tilde.Expand(&p)
 
 	f, err := os.Open(p)
+	if errors.Is(err, fs.ErrNotExist) {
+		log.Println("The custom config.toml file doesn't exist, use the defaults.")
+		return nil
+	}
 	if err == nil {
 		defer f.Close()
 
 		d := toml.NewDecoder(f)
 		err = d.Decode(cfg)
 	}
-	return
+	return err
 }

@@ -1,39 +1,23 @@
 package main
 
 import (
-	"fmt"
-	"log"
-
 	"blogo/config"
 	"blogo/router"
-	"blogo/service/observer"
-
-	_ "github.com/go-sql-driver/mysql"
-	"github.com/jmoiron/sqlx"
+	"blogo/store"
+	"log"
 )
 
 func main() {
-	cfg := config.New(config.ConfigFilePath)
-
-	dsn := fmt.Sprintf(
-		"%v:%v@tcp(%v:%d)/%v?charset=utf8mb4&parseTime=true&loc=Local",
-		cfg.Mysql.Username,
-		cfg.Mysql.Password,
-		cfg.Mysql.Host,
-		cfg.Mysql.Port,
-		cfg.Mysql.Database,
-	)
-	db, err := sqlx.Connect("mysql", dsn)
+	c, err := config.New(config.ConfigFilePath)
 	if err != nil {
-		log.Panicf("Failed to open database with error: %v.", err)
+		log.Panicf("Failed to parse the configurations with error: %v.\n", err)
 	}
 
-	o, err := observer.NewRepoObserver(db, cfg.Website.BlogRepoPath)
+	s, err := store.New(c)
 	if err != nil {
-		log.Panicf("Failed to create repo observer with error: %v.", err)
+		log.Panicf("Failed to create store with error: %v.", err)
 	}
-	o.Run()
 
-	r := router.New(cfg, db)
+	r := router.New(c, s)
 	r.Run()
 }
