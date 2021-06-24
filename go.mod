@@ -6,7 +6,7 @@ require (
 	github.com/gin-contrib/multitemplate v0.0.0-20210428235909-8a2f6dd269a0
 	github.com/gin-gonic/gin v1.7.1
 	github.com/go-playground/validator/v10 v10.5.0 // indirect
-	github.com/go-sql-driver/mysql v1.6.0 // indirect
+	github.com/go-sql-driver/mysql v1.6.0
 	github.com/golang/protobuf v1.5.2 // indirect
 	github.com/jmoiron/sqlx v1.3.4
 	github.com/json-iterator/go v1.1.10 // indirect

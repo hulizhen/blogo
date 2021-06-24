@@ -195,14 +195,11 @@ func NewArticleStore(db *sqlx.DB, cfg *config.Config) (*ArticleStore, error) {
 		article, err := NewArticle(repoPath, p, d)
 		if err == nil {
 			_, err = db.NamedExec(`
-				INSERT INTO article(
+				REPLACE INTO article(
 					id, slug, title, content, preview, categories, tags, top, draft, published_ts
 				) VALUES(
 					:id, :slug, :title, :content, :preview, :categories, :tags, :top, :draft, :published_ts
-				) ON DUPLICATE KEY UPDATE
-					id = :id, slug = :slug, title = :title, content = :content, preview = :preview,
-					categories = :categories, tags = :tags, top = :top, draft = :draft, published_ts = :published_ts
-				`, article)
+				)`, article)
 		}
 		return err
 	})
