@@ -41,29 +41,8 @@ type Config struct {
 	Mysql   mysql   `toml:"mysql"`
 }
 
-var defaultConfigs = Config{
-	Website: website{
-		Title:        "BloGo",
-		Description:  "A lightweight static blog engine built with Go.",
-		Author:       "Anonymous",
-		FaviconPath:  "~/.blogo/favicon.ico",
-		LogoPath:     "~/.blogo/logo.png",
-		BlogRepoPath: "~/.blogo/blog/",
-		TemplatePath: "./template/",
-	},
-
-	Server: server{
-		Port: 8000,
-	},
-
-	Mysql: mysql{
-		Host:     "localhost",
-		Port:     3306,
-		Database: "blogo",
-	},
-}
-
-const ConfigFilePath = "~/.blogo/config.toml"
+const defaultFilePath = "./config/config.toml"
+const customFilePath = "~/.blogo/config.toml"
 
 // expandTildes expands tildes of the path strings in the Config instance recursively.
 func expandTildes(x interface{}) {
@@ -82,13 +61,19 @@ func expandTildes(x interface{}) {
 	}
 }
 
-// New creates a Config with the default configurations,
+// New creates a Config with the default config.toml file,
 // which then overwritten by local custom config.toml file.
-func New(p string) (*Config, error) {
-	cfg := defaultConfigs
+func New() (*Config, error) {
+	var cfg Config
+
+	// Parse the default config.toml file.
+	err := parseConfigFile(defaultFilePath, &cfg, true)
+	if err != nil {
+		return nil, err
+	}
 
 	// Parse the custom config.toml file.
-	err := parseConfigFile(p, &cfg)
+	err = parseConfigFile(customFilePath, &cfg, false)
 	if err != nil {
 		return nil, err
 	}
@@ -98,12 +83,12 @@ func New(p string) (*Config, error) {
 }
 
 // parseConfigFile parses the config.toml file.
-func parseConfigFile(p string, cfg *Config) error {
+func parseConfigFile(p string, cfg *Config, must bool) error {
 	tilde.Expand(&p)
 
 	f, err := os.Open(p)
-	if errors.Is(err, fs.ErrNotExist) {
-		log.Println("The custom config.toml file doesn't exist, use the defaults.")
+	if !must && errors.Is(err, fs.ErrNotExist) {
+		log.Printf("The config.toml file '%v' doesn't exist, use the defaults.\n", p)
 		return nil
 	}
 	if err == nil {

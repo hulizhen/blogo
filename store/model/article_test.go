@@ -47,12 +47,14 @@ func TestScanArticle(t *testing.T) {
 	for i, c := range cases {
 		f, _ := os.Create(path)
 		f.Write([]byte(c.text))
-		f.Close()
+		defer func() {
+			f.Close()
+			os.Remove(path)
+		}()
 
 		metadata, content := scanArticle(path)
 		if metadata != c.metadata || content != c.content {
 			t.Errorf("[%v] Failed to scan article.", i)
 		}
 	}
-	os.Remove(path)
 }

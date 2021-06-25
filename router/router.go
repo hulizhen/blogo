@@ -2,7 +2,6 @@ package router
 
 import (
 	"fmt"
-	"log"
 	"path/filepath"
 	"strings"
 
@@ -23,7 +22,7 @@ func New(cfg *config.Config, store *store.Store) *Router {
 	return &Router{engine: gin.Default(), config: cfg, store: store}
 }
 
-func (r *Router) Run() {
+func (r *Router) Run() (err error) {
 	cfg := r.config
 	e := r.engine
 
@@ -37,26 +36,30 @@ func (r *Router) Run() {
 	e.GET("/tags", r.getTags)
 	e.GET("/about", r.getAbout)
 
-	r.loadTemplates()
+	err = r.loadTemplates()
+	if err != nil {
+		return
+	}
 
 	addr := fmt.Sprintf(":%d", r.config.Server.Port)
 	r.engine.Run(addr)
+	return nil
 }
 
-func (r *Router) loadTemplates() {
+func (r *Router) loadTemplates() (err error) {
 	cfg := r.config
 	render := multitemplate.NewRenderer()
 
 	p := filepath.Join(cfg.Website.TemplatePath, "base/*.html")
 	bases, err := filepath.Glob(p)
 	if err != nil {
-		log.Panicf("Failed to load templates in '%v'.", p)
+		return
 	}
 
 	p = filepath.Join(cfg.Website.TemplatePath, "page/*.html")
 	pages, err := filepath.Glob(p)
 	if err != nil {
-		log.Panicf("Failed to load templates in '%v'.", p)
+		return
 	}
 
 	for _, page := range pages {
@@ -70,6 +73,7 @@ func (r *Router) loadTemplates() {
 	}
 
 	r.engine.HTMLRender = render
+	return
 }
 
 func (r *Router) templateData(data gin.H) gin.H {
@@ -90,7 +94,7 @@ func (r *Router) templateData(data gin.H) gin.H {
 // 		xtime.ShortFormat,
 // 		xtime.LongFormat,
 // 	}
-
+//
 // 	// Iterate the func slice and build a func map of which each key is the last part of func name.
 // 	fm := make(template.FuncMap, len(fs))
 // 	for _, f := range fs {

@@ -9,27 +9,30 @@ import (
 func TestParseConfigFile(t *testing.T) {
 	cases := []struct {
 		text string
+		must bool
 		port int
 	}{
-		{"", 8000},
-		{"[server]\nport = 8080\n", 8080},
+		{"", false, 8000},
+		{"[server]\nport = 8080\n", true, 8080},
 	}
 
 	path := "/tmp/blogo-test-config.toml"
 	for i, c := range cases {
 		f, _ := os.Create(path)
 		f.Write([]byte(c.text))
-		f.Close()
+		defer func() {
+			f.Close()
+			os.Remove(path)
+		}()
 
 		cfg := Config{Server: server{Port: 8000}}
-		if err := parseConfigFile(path, &cfg); err != nil {
+		if err := parseConfigFile(path, &cfg, c.must); c.must && err != nil {
 			t.Errorf("[%v] Failed to parse config file with error: %v", i, err)
 		}
 		if cfg.Server.Port != c.port {
 			t.Errorf("[%v] The port in config should be '%d'.", i, c.port)
 		}
 	}
-	os.Remove(path)
 }
 
 func TestExpandTildes(t *testing.T) {

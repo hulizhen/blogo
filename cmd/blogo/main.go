@@ -8,7 +8,7 @@ import (
 )
 
 func main() {
-	c, err := config.New(config.ConfigFilePath)
+	c, err := config.New()
 	if err != nil {
 		log.Panicf("Failed to parse the configurations with error: %v.\n", err)
 	}
@@ -19,5 +19,8 @@ func main() {
 	}
 
 	r := router.New(c, s)
-	r.Run()
+	err = r.Run()
+	if err != nil {
+		log.Panicf("Failed to run the router with error: %v", err)
+	}
 }

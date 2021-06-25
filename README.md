@@ -1,1 +1,1 @@
-A lightweight static blog engine built with Go.
+BloGo is a lightweight static blog engine built with Go.

@@ -1,0 +1,22 @@
+# This file shows the default configurations for all configurable items of blogo.
+# Any custom changes should be done in your own file `~/.blogo/config.toml`, which will overwrite the defaults.
+
+
+[website]
+title = "BloGo"
+description = "BloGo is a lightweight static blog engine built with Go"
+author = "Anonymous"
+favicon_path = "~/.blogo/favicon.ico"
+logo_path = "~/.blogo/logo.png"
+blog_repo_path = "~/.blogo/blog/"
+template_path = "./template/"
+
+[server]
+port = 8080
+
+[mysql]
+host = "localhost"
+port = 3306
+database = "blogo"
+#username = "database_username"
+#password = "database_password"

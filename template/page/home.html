@@ -3,9 +3,14 @@
   {{range .Articles}}
   <li>
     <div>{{.Title}}</div>
-	<div>{{.ShortPublishedTS}}</div>
+    <div>{{.ShortPublishedTS}}</div>
+    <div>{{.Preview}}</div>
+    <div>
+      <span>{{.Categories}}</span>
+      <span>{{.Tags}}</span>
+    </div>
   </li>
-  <br/>
+  <br />
   {{end}}
 </ul>
 {{end}}
