@@ -51,9 +51,11 @@ var defaultConfigs = Config{
 		BlogRepoPath: "~/.blogo/blog/",
 		TemplatePath: "./template/",
 	},
+
 	Server: server{
 		Port: 8000,
 	},
+
 	Mysql: mysql{
 		Host:     "localhost",
 		Port:     3306,

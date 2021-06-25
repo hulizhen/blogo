@@ -1,1 +1,1 @@
-A blog engine built with Go.
+A lightweight static blog engine built with Go.

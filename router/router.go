@@ -66,6 +66,7 @@ func (r *Router) loadTemplates() {
 		files := append(cp, page)
 		name := strings.TrimSuffix(filepath.Base(page), filepath.Ext(page))
 		render.AddFromFiles(name, files...)
+		// render.AddFromFilesFuncs(name, r.templateFuncMap(), files...)
 	}
 
 	r.engine.HTMLRender = render
@@ -83,3 +84,21 @@ func (r *Router) templateData(data gin.H) gin.H {
 	}
 	return data
 }
+
+// func (r *Router) templateFuncMap() template.FuncMap {
+// 	fs := []interface{}{
+// 		xtime.ShortFormat,
+// 		xtime.LongFormat,
+// 	}
+
+// 	// Iterate the func slice and build a func map of which each key is the last part of func name.
+// 	fm := make(template.FuncMap, len(fs))
+// 	for _, f := range fs {
+// 		ptr := reflect.ValueOf(f).Pointer()
+// 		name := runtime.FuncForPC(ptr).Name()
+// 		strs := strings.Split(name, ".")
+// 		last := strs[len(strs)-1]
+// 		fm[last] = f
+// 	}
+// 	return fm
+// }

@@ -2,6 +2,7 @@ package model
 
 import (
 	"blogo/config"
+	"blogo/internal/xtime"
 	"bufio"
 	"io/fs"
 	"log"
@@ -96,6 +97,10 @@ func NewArticle(base string, path string, entry fs.DirEntry) (article *Article, 
 	article.updateMetadata(am)
 
 	return
+}
+
+func (a *Article) ShortPublishedTS() string {
+	return xtime.ShortFormat(a.PublishedTS)
 }
 
 // updateMetadata updates the article model with the extracted metadata.
