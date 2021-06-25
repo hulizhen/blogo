@@ -43,8 +43,8 @@ type Config struct {
 
 var defaultConfigs = Config{
 	Website: website{
-		Title:        "Blogo",
-		Description:  "A blog engine built with Go.",
+		Title:        "BloGo",
+		Description:  "A lightweight static blog engine built with Go.",
 		Author:       "Anonymous",
 		FaviconPath:  "~/.blogo/favicon.ico",
 		LogoPath:     "~/.blogo/logo.png",
