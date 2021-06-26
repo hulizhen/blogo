@@ -18,6 +18,8 @@ type Router struct {
 	store  *store.Store
 }
 
+const staticFilePath = "/dist"
+
 func New(cfg *config.Config, store *store.Store) *Router {
 	return &Router{engine: gin.Default(), config: cfg, store: store}
 }
@@ -26,7 +28,13 @@ func (r *Router) Run() (err error) {
 	cfg := r.config
 	e := r.engine
 
-	e.Static("/static", "./static")
+	var dist string
+	if gin.IsDebugging() {
+		dist = "./website"
+	} else {
+		dist = "./dist"
+	}
+	e.Static(staticFilePath, dist)
 	e.StaticFile("/favicon.ico", cfg.Website.FaviconPath)
 	e.StaticFile("/logo.png", cfg.Website.LogoPath)
 
@@ -77,10 +85,22 @@ func (r *Router) loadTemplates() (err error) {
 }
 
 func (r *Router) templateData(data gin.H) gin.H {
-	base := gin.H{
-		"WebsiteTitle":  r.config.Website.Title,
-		"WebsiteAuthor": r.config.Website.Author,
+	var scriptFilename string
+	var styleFilename string
+	if gin.IsDebugging() {
+		styleFilename = "main.css"
+		scriptFilename = "main.js"
+	} else {
+		styleFilename = "main.min.css"
+		scriptFilename = "main.min.js"
 	}
+	base := gin.H{
+		"WebsiteTitle":   r.config.Website.Title,
+		"WebsiteAuthor":  r.config.Website.Author,
+		"StyleFilename":  filepath.Join(staticFilePath, "style", styleFilename),
+		"ScriptFilename": filepath.Join(staticFilePath, "script", scriptFilename),
+	}
+
 	for k, v := range base {
 		if _, found := data[k]; !found {
 			data[k] = v
