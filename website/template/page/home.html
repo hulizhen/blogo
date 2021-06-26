@@ -1,16 +1,22 @@
 {{define "main"}}
-<ul>
-  {{range .Articles}}
-  <li>
-    <div>{{.Title}}</div>
-    <div>{{.ShortPublishedTS}}</div>
-    <div>{{.Preview}}</div>
-    <div>
-      <span>{{.Categories}}</span>
-      <span>{{.Tags}}</span>
-    </div>
-  </li>
-  <br />
-  {{end}}
-</ul>
+<div class="container">
+  <ul class="list-group">
+      {{range .Articles}}
+      <li class="list-group-item">
+        <article class="card">
+          <header>
+            <div>{{.Title}}</div>
+            <div>{{.ShortPublishedTS}}</div>
+          </header>
+          <article>{{.Preview}}</article>
+          <footer>
+            <span>{{.Categories}}</span>
+            <span>{{.Tags}}</span>
+          </footer>
+        </article>
+      </li>
+      <br />
+      {{end}}
+    </ul>
+</div>
 {{end}}

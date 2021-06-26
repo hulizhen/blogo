@@ -36,7 +36,7 @@ func (r *Router) Run() (err error) {
 	}
 	e.Static(staticFilePath, dist)
 	e.StaticFile("/favicon.ico", cfg.Website.FaviconPath)
-	e.StaticFile("/logo.png", cfg.Website.LogoPath)
+	e.StaticFile(logoPath(cfg), cfg.Website.LogoPath)
 
 	e.GET("/", r.getHome)
 	e.GET("/archives", r.getArchives)
@@ -88,17 +88,18 @@ func (r *Router) templateData(data gin.H) gin.H {
 	var scriptFilename string
 	var styleFilename string
 	if gin.IsDebugging() {
-		styleFilename = "main.css"
-		scriptFilename = "main.js"
+		styleFilename = "bundle.css"
+		scriptFilename = "bundle.js"
 	} else {
-		styleFilename = "main.min.css"
-		scriptFilename = "main.min.js"
+		styleFilename = "bundle.min.css"
+		scriptFilename = "bundle.min.js"
 	}
 	base := gin.H{
-		"WebsiteTitle":   r.config.Website.Title,
-		"WebsiteAuthor":  r.config.Website.Author,
-		"StyleFilename":  filepath.Join(staticFilePath, "style", styleFilename),
-		"ScriptFilename": filepath.Join(staticFilePath, "script", scriptFilename),
+		"WebsiteTitle":    r.config.Website.Title,
+		"WebsiteAuthor":   r.config.Website.Author,
+		"WebsiteLogoPath": logoPath(r.config),
+		"StyleFilename":   filepath.Join(staticFilePath, "style", styleFilename),
+		"ScriptFilename":  filepath.Join(staticFilePath, "script", scriptFilename),
 	}
 
 	for k, v := range base {
@@ -126,3 +127,7 @@ func (r *Router) templateData(data gin.H) gin.H {
 // 	}
 // 	return fm
 // }
+
+func logoPath(cfg *config.Config) string {
+	return filepath.Join("/", filepath.Base(cfg.Website.LogoPath))
+}
