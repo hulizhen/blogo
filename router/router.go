@@ -50,8 +50,8 @@ func (r *Router) loadTemplates() (err error) {
 	cfg := r.config
 	render := multitemplate.NewRenderer()
 
-	p := filepath.Join(cfg.Website.TemplatePath, "base/*.html")
-	bases, err := filepath.Glob(p)
+	p := filepath.Join(cfg.Website.TemplatePath, "include/*.html")
+	include, err := filepath.Glob(p)
 	if err != nil {
 		return
 	}
@@ -63,9 +63,9 @@ func (r *Router) loadTemplates() (err error) {
 	}
 
 	for _, page := range pages {
-		// Make a copy of the 'bases' slice to avoid sharing and modifing the same backing array.
-		cp := make([]string, len(bases))
-		copy(cp, bases)
+		// Make a copy of the 'include' slice to avoid sharing and modifing the same backing array.
+		cp := make([]string, len(include))
+		copy(cp, include)
 		files := append(cp, page)
 		name := strings.TrimSuffix(filepath.Base(page), filepath.Ext(page))
 		render.AddFromFiles(name, files...)
