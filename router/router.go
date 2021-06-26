@@ -3,7 +3,9 @@ package router
 import (
 	"fmt"
 	"path/filepath"
+	"strconv"
 	"strings"
+	"time"
 
 	"blogo/config"
 	"blogo/store"
@@ -85,6 +87,7 @@ func (r *Router) loadTemplates() (err error) {
 }
 
 func (r *Router) templateData(data gin.H) gin.H {
+	// Style and script filename.
 	var scriptFilename string
 	var styleFilename string
 	if gin.IsDebugging() {
@@ -94,10 +97,22 @@ func (r *Router) templateData(data gin.H) gin.H {
 		styleFilename = "bundle.min.css"
 		scriptFilename = "bundle.min.js"
 	}
+
+	// Copyright year.
+	var year string
+	since := r.config.Website.SinceYear
+	now := time.Now().Local().Year()
+	if since == 0 || since >= now {
+		year = strconv.Itoa(now)
+	} else {
+		year = fmt.Sprintf("%d-%d", since, now)
+	}
+
 	base := gin.H{
 		"WebsiteTitle":    r.config.Website.Title,
 		"WebsiteAuthor":   r.config.Website.Author,
 		"WebsiteLogoPath": logoPath(r.config),
+		"CopyrightYear":   year,
 		"StyleFilename":   filepath.Join(staticFilePath, "style", styleFilename),
 		"ScriptFilename":  filepath.Join(staticFilePath, "script", scriptFilename),
 	}
