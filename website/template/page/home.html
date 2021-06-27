@@ -1,22 +1,23 @@
 {{define "main"}}
 <div class="container">
+  <br />
   <ul class="list-group">
-      {{range .Articles}}
-      <li class="list-group-item">
-        <article class="card">
-          <header>
-            <div>{{.Title}}</div>
-            <div>{{.ShortPublishedTS}}</div>
-          </header>
-          <article>{{.Preview}}</article>
-          <footer>
-            <span>{{.Categories}}</span>
-            <span>{{.Tags}}</span>
-          </footer>
-        </article>
-      </li>
-      <br />
-      {{end}}
-    </ul>
+    {{range .Articles}}
+    <li class="list-group-item">
+      <article class="card-body">
+        <header>
+          <h5 class="card-title">{{.Title}}</h5>
+          <span class="published-date text-muted"><i class="bi bi-calendar3"> </i>{{.ShortPublishedTS}}</span>
+        </header>
+        <p class="article-preview text-body">{{.Preview}}</p>
+        <footer class="article-footer text-muted">
+          <span class="article-categories"><i class="bi bi-folder2-open"> </i>{{.Categories}}</span>
+          <span><i class="bi bi-tags"> </i>{{.Tags}}</span>
+        </footer>
+      </article>
+    </li>
+    <br />
+    {{end}}
+  </ul>
 </div>
 {{end}}
