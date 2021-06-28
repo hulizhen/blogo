@@ -1,19 +1,41 @@
 package router
 
 import (
+	"blogo/pkg/pagination"
 	"net/http"
+	"strconv"
 
 	"github.com/gin-gonic/gin"
 )
 
 func (r *Router) getHome(c *gin.Context) {
-	a, err := r.store.ArticleStore.ReadArticles()
+	// Get offset.
+	offset, err := strconv.Atoi(c.Query("offset"))
+	if err != nil || offset < 1 {
+		offset = 1
+	}
+
+	// Get articles.
+	pageSize := pagination.DefaultPageSize
+	articles, err := r.store.ArticleStore.ReadArticles(pageSize, offset-1)
 	if err != nil {
-		c.AbortWithStatus(http.StatusInternalServerError)
+		c.AbortWithStatusJSON(http.StatusInternalServerError, err)
 		return
 	}
+
+	// Get article count.
+	count, err := r.store.ReadArticleCount()
+	if err != nil {
+		c.AbortWithStatusJSON(http.StatusInternalServerError, err)
+		return
+	}
+
+	// Generate pagination.
+	pagination := pagination.New(count, pageSize, offset, c.FullPath())
+
 	c.HTML(http.StatusOK, "home", r.templateData(gin.H{
-		"Articles": a,
+		"Articles":   articles,
+		"Pagination": pagination,
 	}))
 }
 

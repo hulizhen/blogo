@@ -1,0 +1,33 @@
+{{define "pagination"}}
+<nav aria-label="Pagination">
+  <ul class="pagination">
+    {{with .Previous}}
+    <li class="page-item {{- if .Disabled}} disabled{{end -}}">
+      <a class="page-link" href="{{.Href}}" aria-label="{{.Label}}">
+        <span>{{.Text}}</span>
+      </a>
+    </li>
+    {{end}}
+
+    <li class="page-item d-flex align-items-center pagination-indicator">
+      <form action="{{.Path}}">
+        <input
+          class="pagination-input text-center form-control me-2"
+          type="number"
+          name="offset"
+          value="{{.Current}}"
+        />
+      </form>
+      <span>/&nbsp;&nbsp;{{.Total}}</span>
+    </li>
+
+    {{with .Next}}
+    <li class="page-item {{- if .Disabled}} disabled{{end -}}">
+      <a class="page-link" href="{{.Href}}" aria-label="{{.Label}}">
+        <span>{{.Text}}</span>
+      </a>
+    </li>
+    {{end}}
+  </ul>
+</nav>
+{{end}}

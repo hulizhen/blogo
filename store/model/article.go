@@ -47,6 +47,8 @@ const (
 	tagDelimiter      = ","
 )
 
+const DefaultPageSize = 2
+
 // New creates a Article instance with provided repo path `base`, article `path` and article `entry`.
 func NewArticle(base string, path string, entry fs.DirEntry) (article *Article, err error) {
 	// Generate ID with birth timestamp.
@@ -216,8 +218,8 @@ func NewArticleStore(db *sqlx.DB, cfg *config.Config) (*ArticleStore, error) {
 	return &ArticleStore{db: db}, err
 }
 
-func (s *ArticleStore) ReadArticles() ([]*Article, error) {
-	rows, err := s.db.Queryx(`SELECT * FROM article`)
+func (s *ArticleStore) ReadArticles(limit, offset int) ([]*Article, error) {
+	rows, err := s.db.Queryx(`SELECT * FROM article ORDER BY published_ts DESC LIMIT ? OFFSET ?`, limit, offset*limit)
 	if err != nil {
 		return nil, err
 	}
@@ -232,4 +234,10 @@ func (s *ArticleStore) ReadArticles() ([]*Article, error) {
 		articles = append(articles, &article)
 	}
 	return articles, nil
+}
+
+func (s *ArticleStore) ReadArticleCount() (int, error) {
+	var count int
+	err := s.db.Get(&count, `SELECT COUNT(*) FROM article`)
+	return count, err
 }
