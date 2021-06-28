@@ -1,13 +1,11 @@
 {{define "pagination"}}
 <nav aria-label="Pagination">
   <ul class="pagination">
-    {{with .Previous}}
-    <li class="page-item {{- if .Disabled}} disabled{{end -}}">
-      <a class="page-link" href="{{.Href}}" aria-label="{{.Label}}">
-        <span>{{.Text}}</span>
-      </a>
-    </li>
-    {{end}}
+    <!-- first -->
+    {{template "page-item" .First}}
+
+    <!-- previous -->
+    {{template "page-item" .Previous}}
 
     <li class="page-item d-flex align-items-center pagination-indicator">
       <form action="{{.Path}}">
@@ -21,13 +19,20 @@
       <span>/&nbsp;&nbsp;{{.Total}}</span>
     </li>
 
-    {{with .Next}}
-    <li class="page-item {{- if .Disabled}} disabled{{end -}}">
-      <a class="page-link" href="{{.Href}}" aria-label="{{.Label}}">
-        <span>{{.Text}}</span>
-      </a>
-    </li>
-    {{end}}
+    <!-- next -->
+    {{template "page-item" .Next}}
+
+    <!-- last -->
+    {{template "page-item" .Last}}
   </ul>
 </nav>
+{{end}}
+
+<!-- page-item -->
+{{define "page-item"}}
+<li class="page-item {{- if .Disabled}} disabled{{end -}}">
+  <a class="page-link" href="{{.Href}}" aria-label="{{.Label}}">
+    <span>{{.Text}}</span>
+  </a>
+</li>
 {{end}}

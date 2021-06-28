@@ -19,7 +19,7 @@ type Pagination struct {
 	Path    string
 }
 
-const DefaultPageSize = 3
+const DefaultPageSize = 10
 
 func New(count, size, current int, path string) *Pagination {
 	total := int(math.Ceil(float64(count) / float64(size)))
@@ -38,7 +38,7 @@ func (p *Pagination) Previous() Page {
 	return Page{
 		Label:    "Previous",
 		Text:     html.UnescapeString("&lsaquo;"),
-		Href:     fmt.Sprintf("%v?offset=%d", p.Path, offset),
+		Href:     p.buildHref(offset),
 		Disabled: p.Current <= 1,
 	}
 }
@@ -51,7 +51,29 @@ func (p *Pagination) Next() Page {
 	return Page{
 		Label:    "Next",
 		Text:     html.UnescapeString("&rsaquo;"),
-		Href:     fmt.Sprintf("%v?offset=%d", p.Path, offset),
+		Href:     p.buildHref(offset),
 		Disabled: p.Current >= p.Total,
 	}
+}
+
+func (p *Pagination) First() Page {
+	return Page{
+		Label:    "First",
+		Text:     html.UnescapeString("&laquo;"),
+		Href:     p.buildHref(1),
+		Disabled: p.Current == 1,
+	}
+}
+
+func (p *Pagination) Last() Page {
+	return Page{
+		Label:    "Last",
+		Text:     html.UnescapeString("&raquo;"),
+		Href:     p.buildHref(p.Total),
+		Disabled: p.Current == p.Total,
+	}
+}
+
+func (p *Pagination) buildHref(offset int) string {
+	return fmt.Sprintf("%v?offset=%d", p.Path, offset)
 }
