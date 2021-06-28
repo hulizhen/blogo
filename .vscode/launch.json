@@ -11,6 +11,7 @@
       "mode": "auto",
       "program": "${workspaceFolder}/cmd/blogo/main.go",
       "cwd": "${workspaceFolder}",
+      "internalConsoleOptions": "openOnSessionStart"
       // "env": { "GIN_MODE": "release" }
     }
   ]
