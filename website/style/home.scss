@@ -13,3 +13,13 @@
 .published-date {
   font-size: small;
 }
+
+a.article-title {
+  &,
+  :hover,
+  :visited,
+  :active {
+    color: inherit;
+    text-decoration: none;
+  }
+}

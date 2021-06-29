@@ -39,6 +39,7 @@ func (r *Router) Run() (err error) {
 	e.GET("/categories", r.getCategories)
 	e.GET("/tags", r.getTags)
 	e.GET("/about", r.getAbout)
+	e.GET("/article/:slug", r.getArticle)
 
 	err = r.loadTemplates()
 	if err != nil {

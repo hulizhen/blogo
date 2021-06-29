@@ -6,7 +6,9 @@
     <li class="list-group-item">
       <article class="card-body">
         <header>
-          <h5 class="card-title">{{.Title}}</h5>
+          <a class="article-title" href="{{.Href}}">
+            <h5 class="card-title">{{.Title}}</h5>
+          </a>
           <span class="published-date text-muted"><i class="bi bi-calendar3"> </i>{{.ShortPublishedTS}}</span>
         </header>
         <p class="article-preview text-body">{{.Preview}}</p>

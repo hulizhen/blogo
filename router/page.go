@@ -62,3 +62,9 @@ func (r *Router) getAbout(c *gin.Context) {
 		"Content": "This is ABOUT page.",
 	}))
 }
+
+func (r *Router) getArticle(c *gin.Context) {
+	c.HTML(http.StatusOK, "article", r.templateData(gin.H{
+		"Content": "This is ARTICLE page.",
+	}))
+}

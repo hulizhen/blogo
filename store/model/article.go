@@ -105,6 +105,10 @@ func (a *Article) ShortPublishedTS() string {
 	return xtime.ShortFormat(a.PublishedTS)
 }
 
+func (a *Article) Href() string {
+	return filepath.Join("/article", a.Slug)
+}
+
 // updateMetadata updates the article model with the extracted metadata.
 func (a *Article) updateMetadata(am *articleMetadata) {
 	a.Title = am.Title
