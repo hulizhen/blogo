@@ -9,7 +9,7 @@ author = "Anonymous"
 favicon_path = "~/.blogo/favicon.ico"
 logo_path = "~/.blogo/logo.svg"
 blog_repo_path = "~/.blogo/blog"
-template_path = "./website/template"
+template_path = "website/template"
 
 [server]
 port = 8080

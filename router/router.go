@@ -20,7 +20,7 @@ type Router struct {
 	store  *store.Store
 }
 
-const staticFilePath = "/dist"
+const distFilePath = "/dist"
 
 func New(cfg *config.Config, store *store.Store) *Router {
 	return &Router{engine: gin.Default(), config: cfg, store: store}
@@ -30,13 +30,7 @@ func (r *Router) Run() (err error) {
 	cfg := r.config
 	e := r.engine
 
-	var dist string
-	if gin.IsDebugging() {
-		dist = "./website"
-	} else {
-		dist = "./dist"
-	}
-	e.Static(staticFilePath, dist)
+	e.Static(distFilePath, "./dist")
 	e.StaticFile("/favicon.ico", cfg.Website.FaviconPath)
 	e.StaticFile(logoPath(cfg), cfg.Website.LogoPath)
 
@@ -113,8 +107,8 @@ func (r *Router) templateData(data gin.H) gin.H {
 		"WebsiteAuthor":   r.config.Website.Author,
 		"WebsiteLogoPath": logoPath(r.config),
 		"CopyrightYear":   year,
-		"StyleFilename":   filepath.Join(staticFilePath, "style", styleFilename),
-		"ScriptFilename":  filepath.Join(staticFilePath, "script", scriptFilename),
+		"StyleFilename":   filepath.Join(distFilePath, "style", styleFilename),
+		"ScriptFilename":  filepath.Join(distFilePath, "script", scriptFilename),
 	}
 
 	for k, v := range base {
