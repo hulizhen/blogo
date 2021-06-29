@@ -11,8 +11,9 @@
       "mode": "auto",
       "program": "${workspaceFolder}/cmd/blogo/main.go",
       "cwd": "${workspaceFolder}",
-      "internalConsoleOptions": "openOnSessionStart"
-      // "env": { "GIN_MODE": "release" }
+      "internalConsoleOptions": "openOnSessionStart",
+      "preLaunchTask": "Make Debug",
+      "postDebugTask": "Terminate All Tasks"
     }
   ]
 }
