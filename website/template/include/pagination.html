@@ -7,10 +7,10 @@
     <!-- previous -->
     {{template "page-item" .Previous}}
 
-    <li class="page-item d-flex align-items-center pagination-indicator">
+    <li class="page-item d-flex align-items-center pagination-indicator text-muted">
       <form action="{{.Path}}">
         <input
-          class="pagination-input text-center form-control me-2"
+          class="pagination-input text-center form-control me-2 text-muted"
           type="number"
           name="offset"
           value="{{.Current}}"
