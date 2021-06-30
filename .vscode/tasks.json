@@ -4,10 +4,10 @@
   "version": "2.0.0",
   "tasks": [
     {
-      // When directly invoking 'make' here, VSCode can't normally kill the subprocess,
-      // e.g. sass, run by the task in Makefile after endding a debug session. Here we
-      // wrap it up within a temparary shell script file to workaround it.
-      "command": "echo 'make debug' > /tmp/blogo-make-debug.sh && /bin/sh /tmp/blogo-make-debug.sh",
+      // When directly invoking 'make' here, VSCode's 'workbench.action.tasks.terminate terminateAll'
+      // can't normally kill the subprocess, e.g. sass, run by the task in Makefile after endding a
+      // debug session. Here we wrap it up within a temparary shell script file to workaround it.
+      "command": "echo 'make debug' > /tmp/make-debug.sh && /bin/sh /tmp/make-debug.sh",
       "label": "Make Debug",
       "type": "shell",
       "presentation": {

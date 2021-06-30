@@ -1,0 +1,32 @@
+root = "."
+tmp_dir = "tmp"
+
+[build]
+  bin = "./tmp/blogo"
+  cmd = "go build -gcflags=all='-N -l' -o ./tmp/blogo ./cmd/blogo/"
+  delay = 1000
+  exclude_dir = ["dist", "tmp"]
+  exclude_file = []
+  exclude_regex = []
+  exclude_unchanged = false
+  follow_symlink = false
+  full_bin = ""
+  include_dir = []
+  include_ext = ["go", "html", "toml"]
+  kill_delay = 0
+  log = "air.log"
+  send_interrupt = true
+  stop_on_error = true
+
+[color]
+  app = ""
+  build = "yellow"
+  main = "magenta"
+  runner = "green"
+  watcher = "cyan"
+
+[log]
+  time = true
+
+[misc]
+  clean_on_exit = false

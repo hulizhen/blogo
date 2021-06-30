@@ -5,6 +5,16 @@
   "version": "0.2.0",
   "configurations": [
     {
+      // Run 'make debug' first to launch the process to attach.
+      "name": "Attach to BloGo",
+      "type": "go",
+      "request": "attach",
+      "mode": "local",
+      "processId": "blogo",
+      "internalConsoleOptions": "neverOpen",
+      "debugAdapter": "dlv-dap"
+    },
+    {
       "name": "Launch BloGo",
       "type": "go",
       "request": "launch",
@@ -12,6 +22,7 @@
       "program": "${workspaceFolder}/cmd/blogo/main.go",
       "cwd": "${workspaceFolder}",
       "internalConsoleOptions": "openOnSessionStart",
+      "debugAdapter": "dlv-dap",
       "preLaunchTask": "Make Debug",
       "postDebugTask": "Terminate All Tasks"
     }
