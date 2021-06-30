@@ -34,6 +34,16 @@ sass:
 	sass --watch $(WEBSITE_STYLE_DIR)/main.scss $(DIST_STYLE_DIR)/bundle.css
 
 
+.PHONY: migrate
+migrate:
+	@if ! command -v migrate &> /dev/null; then \
+		echo "Installing Migrate..."; \
+		brew install golang-migrate && \
+		echo "Migrate installed: `migrate -version`"; \
+	fi
+	migrate -path store/migration -database 'mysql://hulz:xxxxxx@tcp(localhost:3306)/blogo?charset=utf8mb4&parseTime=true&loc=Local' -verbose $(cmd)
+
+
 .PHONY: clean
 clean:
 	go mod tidy
