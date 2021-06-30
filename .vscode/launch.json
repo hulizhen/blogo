@@ -5,7 +5,7 @@
   "version": "0.2.0",
   "configurations": [
     {
-      "name": "Debug blogo",
+      "name": "Launch BloGo",
       "type": "go",
       "request": "launch",
       "mode": "auto",
