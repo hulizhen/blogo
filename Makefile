@@ -44,6 +44,11 @@ migrate:
 	migrate -path store/migration -database 'mysql://hulz:xxxxxx@tcp(localhost:3306)/blogo?charset=utf8mb4&parseTime=true&loc=Local' -verbose $(cmd)
 
 
+.PHONY: test
+test:
+	go test ./...
+
+
 .PHONY: clean
 clean:
 	go mod tidy
