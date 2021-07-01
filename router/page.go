@@ -64,7 +64,13 @@ func (r *Router) getAbout(c *gin.Context) {
 }
 
 func (r *Router) getArticle(c *gin.Context) {
+	slug := c.Param("slug")
+	article, err := r.store.ArticleStore.ReadArticle(slug)
+	if err != nil {
+		c.AbortWithStatusJSON(http.StatusInternalServerError, err)
+		return
+	}
 	c.HTML(http.StatusOK, "article", r.templateData(gin.H{
-		"Content": "This is ARTICLE page.",
+		"Article": article,
 	}))
 }

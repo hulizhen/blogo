@@ -14,7 +14,7 @@ tmp_dir = "tmp"
   include_dir = []
   include_ext = ["go", "html", "toml"]
   kill_delay = 0
-  log = "air.log"
+  log = ""
   send_interrupt = true
   stop_on_error = true
 

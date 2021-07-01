@@ -2,8 +2,11 @@ package model
 
 import (
 	"blogo/config"
+	"blogo/internal/markdown"
 	"blogo/internal/xtime"
 	"bufio"
+	"bytes"
+	"html/template"
 	"io/fs"
 	"log"
 	"os"
@@ -28,16 +31,16 @@ type articleMetadata struct {
 }
 
 type Article struct {
-	ID          int64     `db:"id"`
-	Slug        string    `db:"slug"`
-	Title       string    `db:"title"`
-	Content     string    `db:"content"`
-	Preview     string    `db:"preview"`
-	Categories  string    `db:"categories"`
-	Tags        string    `db:"tags"`
-	Top         bool      `db:"top"`
-	Draft       bool      `db:"draft"`
-	PublishedTS time.Time `db:"published_ts"`
+	ID          int64         `db:"id"`
+	Slug        string        `db:"slug"`
+	Title       string        `db:"title"`
+	Content     template.HTML `db:"content"`
+	Preview     string        `db:"preview"`
+	Categories  string        `db:"categories"`
+	Tags        string        `db:"tags"`
+	Top         bool          `db:"top"`
+	Draft       bool          `db:"draft"`
+	PublishedTS time.Time     `db:"published_ts"`
 }
 
 const (
@@ -82,13 +85,18 @@ func NewArticle(base string, path string, entry fs.DirEntry) (article *Article, 
 	basename := filepath.Base(path)
 	slug := strings.TrimSuffix(basename, filepath.Ext(basename))
 
-	// TODO: Parse the content with Markdown parser.
+	// Parse the content with Markdown parser.
+	var buf bytes.Buffer
+	if err = markdown.SharedMarkdown().Convert([]byte(content), &buf); err != nil {
+		return
+	}
+	content = buf.String()
 
 	// Parse metadata and fill article.
 	article = &Article{
 		ID:      id,
 		Slug:    slug,
-		Content: content,
+		Content: template.HTML(content),
 		Preview: preview,
 	}
 	am := &articleMetadata{}
@@ -222,7 +230,7 @@ func NewArticleStore(db *sqlx.DB, cfg *config.Config) (*ArticleStore, error) {
 	return &ArticleStore{db: db}, err
 }
 
-func (s *ArticleStore) ReadArticles(limit, offset int) ([]*Article, error) {
+func (s *ArticleStore) ReadArticles(limit int, offset int) ([]*Article, error) {
 	rows, err := s.db.Queryx(`SELECT * FROM article ORDER BY published_ts DESC LIMIT ? OFFSET ?`, limit, offset*limit)
 	if err != nil {
 		return nil, err
@@ -244,4 +252,12 @@ func (s *ArticleStore) ReadArticleCount() (int, error) {
 	var count int
 	err := s.db.Get(&count, `SELECT COUNT(*) FROM article`)
 	return count, err
+}
+
+func (s *ArticleStore) ReadArticle(slug string) (*Article, error) {
+	var article Article
+	if err := s.db.Get(&article, `SELECT * FROM article WHERE slug=?`, slug); err != nil {
+		return nil, err
+	}
+	return &article, nil
 }
