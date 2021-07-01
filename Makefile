@@ -11,7 +11,11 @@ debug:
 	mkdir -p $(DIST_SCRIPT_DIR)
 	mkdir -p $(DIST_STYLE_DIR)
 	ln -sf ../../$(WEBSITE_SCRIPT_DIR)/main.js $(DIST_SCRIPT_DIR)/bundle.js
-	$(MAKE) -j2 sass air
+	@if [ $(airless) = true ]; then \
+		$(MAKE) sass; \
+	else \
+		$(MAKE) -j2 sass air; \
+	fi;
 
 
 .PHONY: air

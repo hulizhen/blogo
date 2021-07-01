@@ -7,7 +7,8 @@
       // When directly invoking 'make' here, VSCode's 'workbench.action.tasks.terminate terminateAll'
       // can't normally kill the subprocess, e.g. sass, run by the task in Makefile after endding a
       // debug session. Here we wrap it up within a temparary shell script file to workaround it.
-      "command": "echo 'make debug' > /tmp/make-debug.sh && /bin/sh /tmp/make-debug.sh",
+      // "command": "sass --watch ./website/style/main.scss ./dist/style/bundle.css",
+      "command": "echo 'make debug airless=true' > /tmp/make-debug.sh && /bin/sh /tmp/make-debug.sh",
       "label": "Make Debug",
       "type": "shell",
       "presentation": {
@@ -19,7 +20,6 @@
         "clear": true
       },
       "isBackground": true,
-      "options": {},
       "problemMatcher": {
         "pattern": {
           "regexp": ""
