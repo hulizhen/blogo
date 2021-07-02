@@ -10,7 +10,8 @@ import (
 )
 
 type Store struct {
-	*model.ArticleStore
+	ArticleStore *model.ArticleStore
+	AboutStore   *model.AboutStore
 }
 
 func New(cfg *config.Config) (*Store, error) {
@@ -31,7 +32,14 @@ func New(cfg *config.Config) (*Store, error) {
 	if err != nil {
 		return nil, err
 	}
+
+	aboutStore, err := model.NewAboutStore(cfg)
+	if err != nil {
+		return nil, err
+	}
+
 	return &Store{
 		ArticleStore: articleStore,
+		AboutStore:   aboutStore,
 	}, nil
 }

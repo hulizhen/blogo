@@ -24,7 +24,7 @@ func (r *Router) getHome(c *gin.Context) {
 	}
 
 	// Get article count.
-	count, err := r.store.ReadArticleCount()
+	count, err := r.store.ArticleStore.ReadArticleCount()
 	if err != nil {
 		c.AbortWithStatusJSON(http.StatusInternalServerError, err)
 		return
@@ -59,7 +59,7 @@ func (r *Router) getTags(c *gin.Context) {
 
 func (r *Router) getAbout(c *gin.Context) {
 	c.HTML(http.StatusOK, "about", r.templateData(gin.H{
-		"Content": "This is ABOUT page.",
+		"About": r.store.AboutStore.About,
 	}))
 }
 
