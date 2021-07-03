@@ -50,8 +50,6 @@ const (
 	tagDelimiter      = ","
 )
 
-const DefaultPageSize = 2
-
 // New creates a Article instance with provided repo path `base`, article `path` and article `entry`.
 func NewArticle(base string, path string, entry fs.DirEntry) (article *Article, err error) {
 	// Generate ID with birth timestamp.

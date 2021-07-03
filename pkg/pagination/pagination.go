@@ -19,8 +19,6 @@ type Pagination struct {
 	Path    string
 }
 
-const DefaultPageSize = 10
-
 func New(count int, size int, current int, path string) *Pagination {
 	total := int(math.Ceil(float64(count) / float64(size)))
 	return &Pagination{

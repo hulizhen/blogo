@@ -6,6 +6,7 @@
 title = "BloGo"
 description = "BloGo is a lightweight static blog engine built with Go"
 author = "Anonymous"
+article_page_size = 10
 favicon_path = "~/.blogo/favicon.ico"
 logo_path = "~/.blogo/logo.svg"
 blog_repo_path = "~/.blogo/blog"

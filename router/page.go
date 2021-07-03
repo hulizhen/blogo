@@ -16,7 +16,7 @@ func (r *Router) getHome(c *gin.Context) {
 	}
 
 	// Get articles.
-	pageSize := pagination.DefaultPageSize
+	pageSize := r.config.Website.ArticlePageSize
 	articles, err := r.store.ArticleStore.ReadArticles(pageSize, offset-1)
 	if err != nil {
 		c.AbortWithStatusJSON(http.StatusInternalServerError, err)

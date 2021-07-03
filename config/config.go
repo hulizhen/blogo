@@ -13,14 +13,15 @@ import (
 )
 
 type website struct {
-	Title        string `toml:"title"`
-	Description  string `toml:"description"`
-	Author       string `toml:"author"`
-	SinceYear    int    `toml:"since_year"`
-	FaviconPath  string `toml:"favicon_path" blogo:"tilde"`
-	LogoPath     string `toml:"logo_path" blogo:"tilde"`
-	BlogRepoPath string `toml:"blog_repo_path" blogo:"tilde"`
-	TemplatePath string `toml:"template_path" blogo:"tilde"`
+	Title           string `toml:"title"`
+	Description     string `toml:"description"`
+	Author          string `toml:"author"`
+	SinceYear       int    `toml:"since_year"`
+	ArticlePageSize int    `toml:"article_page_size"`
+	FaviconPath     string `toml:"favicon_path" blogo:"tilde"`
+	LogoPath        string `toml:"logo_path" blogo:"tilde"`
+	BlogRepoPath    string `toml:"blog_repo_path" blogo:"tilde"`
+	TemplatePath    string `toml:"template_path" blogo:"tilde"`
 }
 
 type server struct {
