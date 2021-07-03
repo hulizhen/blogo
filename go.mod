@@ -3,6 +3,7 @@ module blogo
 go 1.16
 
 require (
+	github.com/alecthomas/chroma v0.9.2
 	github.com/gin-contrib/multitemplate v0.0.0-20210428235909-8a2f6dd269a0
 	github.com/gin-gonic/gin v1.7.2
 	github.com/go-playground/validator/v10 v10.6.1 // indirect
@@ -17,6 +18,7 @@ require (
 	github.com/pelletier/go-toml v1.9.3
 	github.com/ugorji/go v1.2.6 // indirect
 	github.com/yuin/goldmark v1.3.9
+	github.com/yuin/goldmark-highlighting v0.0.0-20210516132338-9216f9c5aa01
 	golang.org/x/crypto v0.0.0-20210616213533-5ff15b29337e // indirect
 	golang.org/x/sys v0.0.0-20210630005230-0f9fa26af87c // indirect
 	golang.org/x/text v0.3.6 // indirect

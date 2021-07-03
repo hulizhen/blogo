@@ -3,8 +3,9 @@ package markdown
 import (
 	"sync"
 
+	"github.com/alecthomas/chroma/formatters/html"
 	"github.com/yuin/goldmark"
-	"github.com/yuin/goldmark/renderer/html"
+	highlighting "github.com/yuin/goldmark-highlighting"
 )
 
 type Markdown struct {
@@ -20,8 +21,14 @@ func SharedMarkdown() *Markdown {
 	once.Do(func() {
 		sharedMarkdown = &Markdown{
 			goldmark.New(
-				goldmark.WithRendererOptions(
-					html.WithUnsafe(),
+				goldmark.WithExtensions(
+					highlighting.NewHighlighting(
+						highlighting.WithStyle("dracula"), // theme - https://xyproto.github.io/splash/docs/all.html
+						highlighting.WithFormatOptions(
+							html.WithLineNumbers(true),
+							html.LineNumbersInTable(true),
+						),
+					),
 				),
 			),
 		}

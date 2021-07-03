@@ -7,7 +7,7 @@ WEBSITE_STYLE_DIR := $(WEBSITE_DIR)/style
 
 
 .PHONY: debug
-debug: clean
+debug:
 	mkdir -p $(DIST_SCRIPT_DIR)
 	mkdir -p $(DIST_STYLE_DIR)
 	ln -sf ../../$(WEBSITE_SCRIPT_DIR)/main.js $(DIST_SCRIPT_DIR)/bundle.js

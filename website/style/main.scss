@@ -57,3 +57,8 @@ $container-max-widths: (
 @import "home";
 @import "article";
 @import "custom";
+
+pre {
+  unicode-bidi: normal;
+  margin: 6px;
+}
