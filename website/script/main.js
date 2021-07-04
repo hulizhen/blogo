@@ -1,0 +1,1 @@
+Prism.plugins.autoloader.languages_path = '/dist/script/prism/components/';

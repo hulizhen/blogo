@@ -52,13 +52,15 @@ $container-max-widths: (
 // @import "bootstrap/spinners";
 // @import "bootstrap/offcanvas";
 
+@import "prism/prism";
+
 // Add additional custom.
 @import "base";
 @import "home";
 @import "article";
 @import "custom";
 
-pre {
-  unicode-bidi: normal;
-  margin: 6px;
-}
+// pre {
+//   unicode-bidi: normal;
+//   margin: 6px;
+// }

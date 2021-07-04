@@ -81,18 +81,36 @@ func (r *Router) loadTemplates() (err error) {
 	return
 }
 
-func (r *Router) templateData(data gin.H) gin.H {
-	// Style and script filename.
-	var scriptFilename string
-	var styleFilename string
+func styleFilePath() string {
+	var filename string
 	if gin.IsDebugging() {
-		styleFilename = "bundle.css"
-		scriptFilename = "bundle.js"
+		filename = "bundle.css"
 	} else {
-		styleFilename = "bundle.min.css"
-		scriptFilename = "bundle.min.js"
+		filename = "bundle.min.css"
 	}
+	return filepath.Join(distFilePath, "style", filename)
+}
 
+func scriptFilePaths() []string {
+	var filenames []string
+	if gin.IsDebugging() {
+		filenames = []string{
+			"main.js",
+			"prism/prism.js",
+		}
+	} else {
+		filenames = []string{
+			"bundle.min.js",
+		}
+	}
+	var filePaths []string
+	for _, filename := range filenames {
+		filePaths = append(filePaths, filepath.Join(distFilePath, "script", filename))
+	}
+	return filePaths
+}
+
+func (r *Router) templateData(data gin.H) gin.H {
 	// Copyright year.
 	var year string
 	since := r.config.Website.SinceYear
@@ -108,8 +126,8 @@ func (r *Router) templateData(data gin.H) gin.H {
 		"WebsiteAuthor":   r.config.Website.Author,
 		"WebsiteLogoPath": logoPath(r.config),
 		"CopyrightYear":   year,
-		"StyleFilename":   filepath.Join(distFilePath, "style", styleFilename),
-		"ScriptFilename":  filepath.Join(distFilePath, "script", scriptFilename),
+		"StyleFilePath":   styleFilePath(),
+		"ScriptFilePaths": scriptFilePaths(),
 	}
 
 	for k, v := range base {
