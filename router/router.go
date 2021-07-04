@@ -96,7 +96,6 @@ func scriptFilePaths() []string {
 	if gin.IsDebugging() {
 		filenames = []string{
 			"main.js",
-			"prism/prism.js",
 		}
 	} else {
 		filenames = []string{

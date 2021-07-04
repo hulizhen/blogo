@@ -4,11 +4,9 @@ WEBSITE_DIR := website
 PRISM_DIR := prism
 DIST_SCRIPT_DIR := $(DIST_DIR)/script
 DIST_STYLE_DIR := $(DIST_DIR)/style
-DIST_PRISM_DIR := $(DIST_SCRIPT_DIR)/$(PRISM_DIR)
 WEBSITE_SCRIPT_DIR := $(WEBSITE_DIR)/script
 WEBSITE_STYLE_DIR := $(WEBSITE_DIR)/style
-WEBSITE_PRISM_COMPONENTS_DIR := $(WEBSITE_SCRIPT_DIR)/$(PRISM_DIR)/components
-WEBSITE_SCRIPT_SRC := $(shell find website/script -name "*.js" -not -path '$(WEBSITE_PRISM_COMPONENTS_DIR)/*')
+WEBSITE_SCRIPT_SRC := $(shell find website/script -name "*.js")
 
 airless := false
 .PHONY: debug
@@ -25,11 +23,9 @@ debug: clean
 release: clean
 	mkdir -p $(DIST_STYLE_DIR)
 	mkdir -p $(DIST_SCRIPT_DIR)
-	mkdir -p $(DIST_PRISM_DIR)
 	$(MAKE) sass
 	$(MAKE) uglifycss
 	$(MAKE) uglifyjs
-	cp -a $(WEBSITE_PRISM_COMPONENTS_DIR) $(DIST_PRISM_DIR)
 	go build -o $(TMP_DIR)/blogo ./cmd/blogo/
 	GIN_MODE=release $(TMP_DIR)/blogo
 
