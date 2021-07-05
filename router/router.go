@@ -32,7 +32,7 @@ func (r *Router) Run() (err error) {
 
 	e.Static(distFilePath, "./dist")
 	e.StaticFile("/favicon.ico", cfg.Website.FaviconPath)
-	e.StaticFile(logoPath(cfg), cfg.Website.LogoPath)
+	e.StaticFile(r.logoPath(), cfg.Website.LogoPath)
 
 	e.GET("/", r.getHome)
 	e.GET("/archives", r.getArchives)
@@ -123,7 +123,7 @@ func (r *Router) templateData(data gin.H) gin.H {
 	base := gin.H{
 		"WebsiteTitle":    r.config.Website.Title,
 		"WebsiteAuthor":   r.config.Website.Author,
-		"WebsiteLogoPath": logoPath(r.config),
+		"WebsiteLogoPath": r.logoPath(),
 		"CopyrightYear":   year,
 		"StyleFilePath":   styleFilePath(),
 		"ScriptFilePaths": scriptFilePaths(),
@@ -155,6 +155,6 @@ func (r *Router) templateData(data gin.H) gin.H {
 // 	return fm
 // }
 
-func logoPath(cfg *config.Config) string {
-	return filepath.Join("/", filepath.Base(cfg.Website.LogoPath))
+func (r *Router) logoPath() string {
+	return filepath.Join("/", filepath.Base(r.config.Website.LogoPath))
 }
