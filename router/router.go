@@ -75,31 +75,18 @@ func (r *Router) Run() (err error) {
 	return
 }
 
-// registerRoute register `path` with `route`, which handles the request depending on whether
-// the `route` has implemented the cooresponding HTTP method, and aborts with 405 if not.
+// registerRoute registers a request handler with the given `path` and `route`,
+// which implements supported HTTP methods for the corresponding resource.
 func (r *Router) registerRoute(path string, route interface{}) {
-	r.engine.Any(path, func(c *gin.Context) {
-		v := reflect.ValueOf(route)
-		m := v.MethodByName(c.Request.Method)
-
-		if !m.IsValid() {
-			// The requested HTTP method is not allowed, here we return HTTP status code 405
-			// with an "Allow" header field indicating the methods that we have implemented.
-			ms := []string{}
-			for i := 0; i < len(validHTTPMethods); i++ {
-				m = v.MethodByName(validHTTPMethods[i])
-				if m.IsValid() {
-					ms = append(ms, validHTTPMethods[i])
-				}
+	v := reflect.ValueOf(route)
+	for _, n := range validHTTPMethods {
+		m := v.MethodByName(n)
+		if m.IsValid() {
+			if f, ok := m.Interface().(func(*gin.Context)); ok {
+				r.engine.Handle(n, path, f)
 			}
-			c.Header("Allow", strings.Join(ms, ", "))
-			c.AbortWithStatus(http.StatusMethodNotAllowed)
-			return
 		}
-
-		// Call the requested HTTP method implemented by the `route`.
-		m.Call([]reflect.Value{reflect.ValueOf(c)})
-	})
+	}
 }
 
 // loadTemplates loads all templates into a map, each value of which is a copy of
