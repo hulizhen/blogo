@@ -1,21 +1,22 @@
-package route
+package page
 
 import (
+	"blogo/router/route"
 	"net/http"
 
 	"github.com/gin-gonic/gin"
 )
 
 type CategoryRoute struct {
-	*Route
+	*route.Route
 }
 
-func NewCategoryRoute(r *Route) *CategoryRoute {
+func NewCategoryRoute(r *route.Route) *CategoryRoute {
 	return &CategoryRoute{Route: r}
 }
 
 func (r *CategoryRoute) GET(c *gin.Context) {
-	c.HTML(http.StatusOK, "categories", r.templateData(gin.H{
+	c.HTML(http.StatusOK, "categories", r.TemplateData(gin.H{
 		"Content": "This is CATEGORIES page.",
 	}))
 }

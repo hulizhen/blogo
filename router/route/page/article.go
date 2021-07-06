@@ -1,16 +1,17 @@
-package route
+package page
 
 import (
+	"blogo/router/route"
 	"net/http"
 
 	"github.com/gin-gonic/gin"
 )
 
 type ArticleRoute struct {
-	*Route
+	*route.Route
 }
 
-func NewArticleRoute(r *Route) *ArticleRoute {
+func NewArticleRoute(r *route.Route) *ArticleRoute {
 	return &ArticleRoute{Route: r}
 }
 
@@ -21,7 +22,7 @@ func (r *ArticleRoute) GET(c *gin.Context) {
 		c.AbortWithStatusJSON(http.StatusInternalServerError, err)
 		return
 	}
-	c.HTML(http.StatusOK, "article", r.templateData(gin.H{
+	c.HTML(http.StatusOK, "article", r.TemplateData(gin.H{
 		"Article": article,
 	}))
 }

@@ -50,7 +50,7 @@ func scriptPaths() []string {
 	return filePaths
 }
 
-func (r *Route) templateData(data gin.H) gin.H {
+func (r *Route) TemplateData(data gin.H) gin.H {
 	// Copyright year.
 	var year string
 	since := r.Config.Website.SinceYear

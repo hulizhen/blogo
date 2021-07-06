@@ -1,21 +1,22 @@
-package route
+package page
 
 import (
+	"blogo/router/route"
 	"net/http"
 
 	"github.com/gin-gonic/gin"
 )
 
 type TagRoute struct {
-	*Route
+	*route.Route
 }
 
-func NewTagRoute(r *Route) *TagRoute {
+func NewTagRoute(r *route.Route) *TagRoute {
 	return &TagRoute{Route: r}
 }
 
 func (r *TagRoute) GET(c *gin.Context) {
-	c.HTML(http.StatusOK, "tags", r.templateData(gin.H{
+	c.HTML(http.StatusOK, "tags", r.TemplateData(gin.H{
 		"Content": "This is TAGS page.",
 	}))
 }

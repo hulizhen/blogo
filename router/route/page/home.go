@@ -1,7 +1,8 @@
-package route
+package page
 
 import (
 	"blogo/pkg/pagination"
+	"blogo/router/route"
 	"net/http"
 	"strconv"
 
@@ -9,10 +10,10 @@ import (
 )
 
 type HomeRoute struct {
-	*Route
+	*route.Route
 }
 
-func NewHomeRoute(r *Route) *HomeRoute {
+func NewHomeRoute(r *route.Route) *HomeRoute {
 	return &HomeRoute{Route: r}
 }
 
@@ -41,7 +42,7 @@ func (r *HomeRoute) GET(c *gin.Context) {
 	// Generate pagination.
 	pagination := pagination.New(count, pageSize, offset, c.FullPath())
 
-	c.HTML(http.StatusOK, "home", r.templateData(gin.H{
+	c.HTML(http.StatusOK, "home", r.TemplateData(gin.H{
 		"Articles":   articles,
 		"Pagination": pagination,
 	}))

@@ -1,21 +1,22 @@
-package route
+package page
 
 import (
+	"blogo/router/route"
 	"net/http"
 
 	"github.com/gin-gonic/gin"
 )
 
 type ArchiveRoute struct {
-	*Route
+	*route.Route
 }
 
-func NewArchiveRoute(r *Route) *ArchiveRoute {
+func NewArchiveRoute(r *route.Route) *ArchiveRoute {
 	return &ArchiveRoute{Route: r}
 }
 
 func (r *ArchiveRoute) GET(c *gin.Context) {
-	c.HTML(http.StatusOK, "archives", r.templateData(gin.H{
+	c.HTML(http.StatusOK, "archives", r.TemplateData(gin.H{
 		"Content": "This is ARCHIVES page.",
 	}))
 }

@@ -9,6 +9,7 @@ import (
 
 	"blogo/config"
 	"blogo/router/route"
+	"blogo/router/route/page"
 	"blogo/store"
 
 	"github.com/gin-contrib/multitemplate"
@@ -55,12 +56,12 @@ func (r *Router) Run() (err error) {
 	e.StaticFile(r.LogoPath(), c.Website.LogoPath)
 
 	// Register routes.
-	r.registerRoute("/", route.NewHomeRoute(r.Route))
-	r.registerRoute("/archives", route.NewArchiveRoute(r.Route))
-	r.registerRoute("/categories", route.NewCategoryRoute(r.Route))
-	r.registerRoute("/tags", route.NewTagRoute(r.Route))
-	r.registerRoute("/about", route.NewAboutRoute(r.Route))
-	r.registerRoute("/articles/:slug", route.NewArticleRoute(r.Route))
+	r.registerRoute("/", page.NewHomeRoute(r.Route))
+	r.registerRoute("/archives", page.NewArchiveRoute(r.Route))
+	r.registerRoute("/categories", page.NewCategoryRoute(r.Route))
+	r.registerRoute("/tags", page.NewTagRoute(r.Route))
+	r.registerRoute("/about", page.NewAboutRoute(r.Route))
+	r.registerRoute("/articles/:slug", page.NewArticleRoute(r.Route))
 
 	// Load templates.
 	err = r.loadTemplates()
@@ -71,7 +72,7 @@ func (r *Router) Run() (err error) {
 	// Run on the specified address:port.
 	a := fmt.Sprintf(":%d", r.Config.Server.Port)
 	r.engine.Run(a)
-	return nil
+	return
 }
 
 // registerRoute register `path` with `route`, which handles the request depending on whether
