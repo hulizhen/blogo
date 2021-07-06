@@ -112,7 +112,7 @@ func (a *Article) ShortPublishedTS() string {
 }
 
 func (a *Article) Href() string {
-	return filepath.Join("/article", a.Slug)
+	return filepath.Join("/articles", a.Slug)
 }
 
 // updateMetadata updates the article model with the extracted metadata.

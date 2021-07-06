@@ -2,12 +2,13 @@ package router
 
 import (
 	"fmt"
+	"net/http"
 	"path/filepath"
-	"strconv"
+	"reflect"
 	"strings"
-	"time"
 
 	"blogo/config"
+	"blogo/router/route"
 	"blogo/store"
 
 	"github.com/gin-contrib/multitemplate"
@@ -15,53 +16,93 @@ import (
 )
 
 type Router struct {
+	*route.Route
 	engine *gin.Engine
-	config *config.Config
-	store  *store.Store
 }
 
-const distFilePath = "/dist"
+var validHTTPMethods = [...]string{
+	http.MethodGet,
+	http.MethodHead,
+	http.MethodPost,
+	http.MethodPut,
+	http.MethodPatch,
+	http.MethodDelete,
+	http.MethodConnect,
+	http.MethodOptions,
+	http.MethodTrace,
+}
 
-func New(cfg *config.Config, store *store.Store) *Router {
-	return &Router{engine: gin.Default(), config: cfg, store: store}
+func New(c *config.Config, s *store.Store) *Router {
+	return &Router{
+		Route: &route.Route{
+			Config: c,
+			Store:  s,
+		},
+		engine: gin.Default(),
+	}
 }
 
 func (r *Router) Run() (err error) {
-	cfg := r.config
+	c := r.Config
 	e := r.engine
 
-	e.Static(distFilePath, "./dist")
-	e.StaticFile("/favicon.ico", cfg.Website.FaviconPath)
-	e.StaticFile(r.logoPath(), cfg.Website.LogoPath)
+	e.Static(route.DistFilePath, "./dist")
+	e.StaticFile("/favicon.ico", c.Website.FaviconPath)
+	e.StaticFile(r.LogoPath(), c.Website.LogoPath)
 
-	e.GET("/", r.getHome)
-	e.GET("/archives", r.getArchives)
-	e.GET("/categories", r.getCategories)
-	e.GET("/tags", r.getTags)
-	e.GET("/about", r.getAbout)
-	e.GET("/article/:slug", r.getArticle)
+	r.registerRoute("/", route.NewHomeRoute(r.Route))
+	r.registerRoute("/archives", route.NewArchiveRoute(r.Route))
+	r.registerRoute("/categories", route.NewCategoryRoute(r.Route))
+	r.registerRoute("/tags", route.NewTagRoute(r.Route))
+	r.registerRoute("/about", route.NewAboutRoute(r.Route))
+	r.registerRoute("/articles/:slug", route.NewArticleRoute(r.Route))
 
 	err = r.loadTemplates()
 	if err != nil {
 		return
 	}
 
-	addr := fmt.Sprintf(":%d", r.config.Server.Port)
-	r.engine.Run(addr)
+	a := fmt.Sprintf(":%d", r.Config.Server.Port)
+	r.engine.Run(a)
 	return nil
 }
 
+func (r *Router) registerRoute(path string, route interface{}) {
+	r.engine.Any(path, func(c *gin.Context) {
+		v := reflect.ValueOf(route)
+		m := v.MethodByName(c.Request.Method)
+
+		// The requested HTTP method is not allowed, here we return HTTP status code 405
+		// with an "Allow" header field indicating the supported methods.
+		if !m.IsValid() {
+			ms := []string{}
+			for i := 0; i < len(validHTTPMethods); i++ {
+				m = v.MethodByName(validHTTPMethods[i])
+				if m.IsValid() {
+					ms = append(ms, validHTTPMethods[i])
+				}
+			}
+			c.Header("Allow", strings.Join(ms, ", "))
+			c.AbortWithStatus(http.StatusMethodNotAllowed)
+			return
+		}
+
+		// Call the requested HTTP method implemented by the `route`.
+		m.Call([]reflect.Value{reflect.ValueOf(c)})
+	})
+}
+
 func (r *Router) loadTemplates() (err error) {
-	cfg := r.config
+	c := r.Config
 	render := multitemplate.NewRenderer()
 
-	p := filepath.Join(cfg.Website.TemplatePath, "include/*.html")
+	p := filepath.Join(c.Website.TemplatePath, "include/*.html")
 	include, err := filepath.Glob(p)
 	if err != nil {
 		return
 	}
 
-	p = filepath.Join(cfg.Website.TemplatePath, "page/*.html")
+	p = filepath.Join(c.Website.TemplatePath, "page/*.html")
 	pages, err := filepath.Glob(p)
 	if err != nil {
 		return
@@ -81,62 +122,6 @@ func (r *Router) loadTemplates() (err error) {
 	return
 }
 
-func styleFilePath() string {
-	var filename string
-	if gin.IsDebugging() {
-		filename = "bundle.css"
-	} else {
-		filename = "bundle.min.css"
-	}
-	return filepath.Join(distFilePath, "style", filename)
-}
-
-func scriptFilePaths() []string {
-	var filenames []string
-	if gin.IsDebugging() {
-		filenames = []string{
-			"main.js",
-		}
-	} else {
-		filenames = []string{
-			"bundle.min.js",
-		}
-	}
-	var filePaths []string
-	for _, filename := range filenames {
-		filePaths = append(filePaths, filepath.Join(distFilePath, "script", filename))
-	}
-	return filePaths
-}
-
-func (r *Router) templateData(data gin.H) gin.H {
-	// Copyright year.
-	var year string
-	since := r.config.Website.SinceYear
-	now := time.Now().Local().Year()
-	if since == 0 || since >= now {
-		year = strconv.Itoa(now)
-	} else {
-		year = fmt.Sprintf("%d-%d", since, now)
-	}
-
-	base := gin.H{
-		"WebsiteTitle":    r.config.Website.Title,
-		"WebsiteAuthor":   r.config.Website.Author,
-		"WebsiteLogoPath": r.logoPath(),
-		"CopyrightYear":   year,
-		"StyleFilePath":   styleFilePath(),
-		"ScriptFilePaths": scriptFilePaths(),
-	}
-
-	for k, v := range base {
-		if _, found := data[k]; !found {
-			data[k] = v
-		}
-	}
-	return data
-}
-
 // func (r *Router) templateFuncMap() template.FuncMap {
 // 	fs := []interface{}{
 // 		xtime.ShortFormat,
@@ -154,7 +139,3 @@ func (r *Router) templateData(data gin.H) gin.H {
 // 	}
 // 	return fm
 // }
-
-func (r *Router) logoPath() string {
-	return filepath.Join("/", filepath.Base(r.config.Website.LogoPath))
-}
