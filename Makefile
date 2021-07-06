@@ -72,9 +72,9 @@ test:
 
 .PHONY: clean
 clean:
-	go mod tidy
 	rm -rf $(DIST_DIR)
 	rm -rf $(TMP_DIR)
+	go mod tidy
 
 
 # Install the $(1) with $(2) if it hasn't been installed.
