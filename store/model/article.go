@@ -35,7 +35,7 @@ type Article struct {
 	Slug        string        `db:"slug"`
 	Title       string        `db:"title"`
 	Content     template.HTML `db:"content"`
-	Preview     string        `db:"preview"`
+	Preview     template.HTML `db:"preview"`
 	Categories  string        `db:"categories"`
 	Tags        string        `db:"tags"`
 	Top         bool          `db:"top"`
@@ -83,19 +83,24 @@ func NewArticle(base string, path string, entry fs.DirEntry) (article *Article, 
 	basename := filepath.Base(path)
 	slug := strings.TrimSuffix(basename, filepath.Ext(basename))
 
-	// Parse the content with Markdown parser.
+	// Parse the content and preview with markdown parser.
 	var buf bytes.Buffer
 	if err = markdown.SharedMarkdown().Convert([]byte(content), &buf); err != nil {
 		return
 	}
 	content = buf.String()
+	buf.Reset()
+	if err = markdown.SharedMarkdown().Convert([]byte(preview), &buf); err != nil {
+		return
+	}
+	preview = buf.String()
 
 	// Parse metadata and fill article.
 	article = &Article{
 		ID:      id,
 		Slug:    slug,
 		Content: template.HTML(content),
-		Preview: preview,
+		Preview: template.HTML(preview),
 	}
 	am := &articleMetadata{}
 	err = toml.Unmarshal([]byte(metadata), am)
