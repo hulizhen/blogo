@@ -43,8 +43,8 @@ type Config struct {
 	Mysql   mysql   `toml:"mysql"`
 }
 
-const defaultFilePath = "./config/config.toml"
-const customFilePath = "~/.blogo/config.toml"
+const defaultConfigPath = "./config/config.toml"
+const customConfigPath = "~/.blogo/config.toml"
 
 // expandTildes expands tildes of the path strings in the Config instance recursively.
 func expandTildes(x interface{}) {
@@ -69,13 +69,13 @@ func New() (*Config, error) {
 	var cfg Config
 
 	// Parse the default config.toml file.
-	err := parseConfigFile(defaultFilePath, &cfg, true)
+	err := parseConfigFile(defaultConfigPath, &cfg, true)
 	if err != nil {
 		return nil, err
 	}
 
 	// Parse the custom config.toml file.
-	err = parseConfigFile(customFilePath, &cfg, false)
+	err = parseConfigFile(customConfigPath, &cfg, false)
 	if err != nil {
 		return nil, err
 	}

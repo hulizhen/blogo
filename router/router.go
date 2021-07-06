@@ -20,6 +20,7 @@ type Router struct {
 	engine *gin.Engine
 }
 
+// Takes from Go source code 'net/http/method.go'.
 var validHTTPMethods = [...]string{
 	http.MethodGet,
 	http.MethodHead,
@@ -32,6 +33,7 @@ var validHTTPMethods = [...]string{
 	http.MethodTrace,
 }
 
+// New creates a router instance with an internal router engine.
 func New(c *config.Config, s *store.Store) *Router {
 	return &Router{
 		Route: &route.Route{
@@ -42,14 +44,17 @@ func New(c *config.Config, s *store.Store) *Router {
 	}
 }
 
+// Run sets everything up and runs the server.
 func (r *Router) Run() (err error) {
 	c := r.Config
 	e := r.engine
 
+	// Serve static files.
 	e.Static(route.DistFilePath, "./dist")
 	e.StaticFile("/favicon.ico", c.Website.FaviconPath)
 	e.StaticFile(r.LogoPath(), c.Website.LogoPath)
 
+	// Register routes.
 	r.registerRoute("/", route.NewHomeRoute(r.Route))
 	r.registerRoute("/archives", route.NewArchiveRoute(r.Route))
 	r.registerRoute("/categories", route.NewCategoryRoute(r.Route))
@@ -57,24 +62,28 @@ func (r *Router) Run() (err error) {
 	r.registerRoute("/about", route.NewAboutRoute(r.Route))
 	r.registerRoute("/articles/:slug", route.NewArticleRoute(r.Route))
 
+	// Load templates.
 	err = r.loadTemplates()
 	if err != nil {
 		return
 	}
 
+	// Run on the specified address:port.
 	a := fmt.Sprintf(":%d", r.Config.Server.Port)
 	r.engine.Run(a)
 	return nil
 }
 
+// registerRoute register `path` with `route`, which handles the request depending on whether
+// the `route` has implemented the cooresponding HTTP method, and aborts with 405 if not.
 func (r *Router) registerRoute(path string, route interface{}) {
 	r.engine.Any(path, func(c *gin.Context) {
 		v := reflect.ValueOf(route)
 		m := v.MethodByName(c.Request.Method)
 
-		// The requested HTTP method is not allowed, here we return HTTP status code 405
-		// with an "Allow" header field indicating the supported methods.
 		if !m.IsValid() {
+			// The requested HTTP method is not allowed, here we return HTTP status code 405
+			// with an "Allow" header field indicating the methods that we have implemented.
 			ms := []string{}
 			for i := 0; i < len(validHTTPMethods); i++ {
 				m = v.MethodByName(validHTTPMethods[i])
@@ -92,6 +101,8 @@ func (r *Router) registerRoute(path string, route interface{}) {
 	})
 }
 
+// loadTemplates loads all templates into a map, each value of which is a copy of
+// all templates in 'include' directory followed with a single template in 'page' directory.
 func (r *Router) loadTemplates() (err error) {
 	c := r.Config
 	render := multitemplate.NewRenderer()

@@ -11,7 +11,7 @@
     <link rel="stylesheet" href="{{$CDNBaseURL}}/prism/1.24.1/themes/prism-okaidia.min.css" />
     <link rel="stylesheet" href="{{$CDNBaseURL}}/prism/1.24.1/plugins/line-numbers/prism-line-numbers.min.css" />
     <link rel="stylesheet" href="{{$CDNBaseURL}}/prism/1.24.1/plugins/toolbar/prism-toolbar.min.css" />
-    <link rel="stylesheet" href="{{.StyleFilePath}}" />
+    <link rel="stylesheet" href="{{.StylePath}}" />
   </head>
   <body class="d-flex flex-column h-100 line-numbers">
     <header class="sticky-top">{{block "header" .}} {{end}}</header>
@@ -24,8 +24,7 @@
     <script src="{{$CDNBaseURL}}/prism/1.24.1/plugins/line-numbers/prism-line-numbers.min.js"></script>
     <script src="{{$CDNBaseURL}}/prism/1.24.1/plugins/toolbar/prism-toolbar.min.js"></script>
     <script src="{{$CDNBaseURL}}/prism/1.24.1/plugins/copy-to-clipboard/prism-copy-to-clipboard.min.js"></script>
-    <script src="{{.ScriptFilename}}"></script>
-    {{range .ScriptFilePaths}}
+    {{range .ScriptPaths}}
     <script src="{{.}}"></script>
     {{end}}
   </body>

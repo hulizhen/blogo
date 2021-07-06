@@ -22,7 +22,7 @@ func (r *Route) LogoPath() string {
 	return filepath.Join("/", filepath.Base(r.Config.Website.LogoPath))
 }
 
-func styleFilePath() string {
+func stylePath() string {
 	var filename string
 	if gin.IsDebugging() {
 		filename = "bundle.css"
@@ -32,7 +32,7 @@ func styleFilePath() string {
 	return filepath.Join(DistFilePath, "style", filename)
 }
 
-func scriptFilePaths() []string {
+func scriptPaths() []string {
 	var filenames []string
 	if gin.IsDebugging() {
 		filenames = []string{
@@ -66,8 +66,8 @@ func (r *Route) templateData(data gin.H) gin.H {
 		"WebsiteAuthor":   r.Config.Website.Author,
 		"WebsiteLogoPath": r.LogoPath(),
 		"CopyrightYear":   year,
-		"StyleFilePath":   styleFilePath(),
-		"ScriptFilePaths": scriptFilePaths(),
+		"StylePath":       stylePath(),
+		"ScriptPaths":     scriptPaths(),
 	}
 
 	for k, v := range base {

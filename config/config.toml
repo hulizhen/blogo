@@ -6,6 +6,7 @@
 title = "BloGo"
 description = "BloGo is a lightweight static blog engine built with Go"
 author = "Anonymous"
+# since_year = current_year
 article_page_size = 10
 favicon_path = "~/.blogo/favicon.ico"
 logo_path = "~/.blogo/logo.svg"
@@ -19,5 +20,5 @@ port = 8080
 host = "localhost"
 port = 3306
 database = "blogo"
-#username = "database_username"
-#password = "database_password"
+# username = "database_username"
+# password = "database_password"
