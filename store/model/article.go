@@ -25,7 +25,7 @@ type articleMetadata struct {
 	Title      string    `toml:"title"`
 	Categories []string  `toml:"categories"`
 	Tags       []string  `toml:"tags"`
-	Top        bool      `toml:"top"`
+	Pinned     bool      `toml:"pinned"`
 	Draft      bool      `toml:"drfat"`
 	Date       time.Time `toml:"date"`
 }
@@ -38,7 +38,7 @@ type Article struct {
 	Preview     template.HTML `db:"preview"`
 	Categories  string        `db:"categories"`
 	Tags        string        `db:"tags"`
-	Top         bool          `db:"top"`
+	Pinned      bool          `db:"pinned"`
 	Draft       bool          `db:"draft"`
 	PublishedTS time.Time     `db:"published_ts"`
 }
@@ -125,7 +125,7 @@ func (a *Article) updateMetadata(am *articleMetadata) {
 	a.Title = am.Title
 	a.Categories = strings.Join(am.Categories, categoryDelimiter)
 	a.Tags = strings.Join(am.Tags, tagDelimiter)
-	a.Top = am.Top
+	a.Pinned = am.Pinned
 	a.Draft = am.Draft
 	a.PublishedTS = am.Date
 }
@@ -218,9 +218,9 @@ func NewArticleStore(db *sqlx.DB, cfg *config.Config) (*ArticleStore, error) {
 		if err == nil {
 			_, err = db.NamedExec(`
 				REPLACE INTO article(
-					id, slug, title, content, preview, categories, tags, top, draft, published_ts
+					id, slug, title, content, preview, categories, tags, pinned, draft, published_ts
 				) VALUES(
-					:id, :slug, :title, :content, :preview, :categories, :tags, :top, :draft, :published_ts
+					:id, :slug, :title, :content, :preview, :categories, :tags, :pinned, :draft, :published_ts
 				)`,
 				article,
 			)
