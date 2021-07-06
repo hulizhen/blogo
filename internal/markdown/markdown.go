@@ -4,7 +4,7 @@ import (
 	"sync"
 
 	"github.com/yuin/goldmark"
-	"github.com/yuin/goldmark/renderer/html"
+	"github.com/yuin/goldmark/extension"
 )
 
 type Markdown struct {
@@ -20,9 +20,7 @@ func SharedMarkdown() *Markdown {
 	once.Do(func() {
 		sharedMarkdown = &Markdown{
 			goldmark.New(
-				goldmark.WithRendererOptions(
-					html.WithUnsafe(),
-				),
+				goldmark.WithExtensions(extension.GFM),
 			),
 		}
 	})
