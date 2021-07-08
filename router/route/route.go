@@ -16,38 +16,8 @@ type Route struct {
 	Store  *store.Store
 }
 
-const DistFilePath = "/dist"
-
 func (r *Route) LogoPath() string {
 	return filepath.Join("/", filepath.Base(r.Config.Website.LogoPath))
-}
-
-func stylePath() string {
-	var filename string
-	if gin.IsDebugging() {
-		filename = "bundle.css"
-	} else {
-		filename = "bundle.min.css"
-	}
-	return filepath.Join(DistFilePath, "style", filename)
-}
-
-func scriptPaths() []string {
-	var filenames []string
-	if gin.IsDebugging() {
-		filenames = []string{
-			"main.js",
-		}
-	} else {
-		filenames = []string{
-			"bundle.min.js",
-		}
-	}
-	var filePaths []string
-	for _, filename := range filenames {
-		filePaths = append(filePaths, filepath.Join(DistFilePath, "script", filename))
-	}
-	return filePaths
 }
 
 func (r *Route) TemplateData(data gin.H) gin.H {
@@ -66,8 +36,6 @@ func (r *Route) TemplateData(data gin.H) gin.H {
 		"WebsiteAuthor":   r.Config.Website.Author,
 		"WebsiteLogoPath": r.LogoPath(),
 		"CopyrightYear":   year,
-		"StylePath":       stylePath(),
-		"ScriptPaths":     scriptPaths(),
 	}
 
 	for k, v := range base {

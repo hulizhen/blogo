@@ -34,6 +34,8 @@ var validHTTPMethods = [...]string{
 	http.MethodTrace,
 }
 
+const distFilePath = "/dist"
+
 // New creates a router instance with an internal router engine.
 func New(c *config.Config, s *store.Store) *Router {
 	return &Router{
@@ -51,7 +53,7 @@ func (r *Router) Run() (err error) {
 	e := r.engine
 
 	// Serve static files.
-	e.Static(route.DistFilePath, "./dist")
+	e.Static(distFilePath, "./dist")
 	e.StaticFile("/favicon.ico", c.Website.FaviconPath)
 	e.StaticFile(r.LogoPath(), c.Website.LogoPath)
 

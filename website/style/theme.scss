@@ -1,0 +1,65 @@
+// Theme colors
+$dark-colors: (
+  primary: #66de93,
+  background: #292c34,
+  title: #e5e5e6,
+  text: #b1bac3,
+  description: #696969,
+);
+
+$light-colors: (
+  primary: #66de93,
+  background: #ffffff,
+  title: #e5e5e6,
+  text: #b1bac3,
+  description: #696969,
+);
+
+// Theme mixins
+@mixin t($attr, $value) {
+  [data-theme="light"] & {
+    #{$attr}: map-get($light-colors, $value);
+  }
+  [data-theme="dark"] & {
+    #{$attr}: map-get($dark-colors, $value);
+  }
+}
+
+// Theme customizations
+body {
+  @include t(background-color, background);
+  @include t(color, text);
+}
+
+.page-item {
+  & .page-link,
+  & .form-control {
+    background-color: inherit;
+    color: inherit;
+  }
+  & .form-control {
+    @include t(border-color, description);
+  }
+  &.disabled .page-link {
+    background-color: inherit;
+    @include t(color, description);
+  }
+}
+
+a.navbar-brand,
+a.nav-link.active {
+	@include t(color, title);
+}
+
+a {
+  @include t(color, primary);
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  @include t(color, title);
+}

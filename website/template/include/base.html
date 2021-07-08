@@ -11,12 +11,14 @@
     <link rel="stylesheet" href="{{$CDNBaseURL}}/prism/1.24.1/themes/prism-okaidia.min.css" />
     <link rel="stylesheet" href="{{$CDNBaseURL}}/prism/1.24.1/plugins/line-numbers/prism-line-numbers.min.css" />
     <link rel="stylesheet" href="{{$CDNBaseURL}}/prism/1.24.1/plugins/toolbar/prism-toolbar.min.css" />
-    <link rel="stylesheet" href="{{.StylePath}}" />
+    <link rel="stylesheet" href="/dist/style/bundle.min.css" />
   </head>
   <body class="d-flex flex-column h-100 line-numbers">
+    <script src="/dist/script/theme.min.js"></script>
+
     <header class="sticky-top">{{block "header" .}} {{end}}</header>
     <main class="container">{{block "main" .}} {{end}}</main>
-    <footer class="footer mt-auto py-3 bg-light">{{block "footer" .}} {{end}}</footer>
+    <footer class="footer mt-auto py-3">{{block "footer" .}} {{end}}</footer>
 
     <script src="{{$CDNBaseURL}}/twitter-bootstrap/5.0.2/js/bootstrap.bundle.min.js"></script>
     <script src="{{$CDNBaseURL}}/prism/1.24.1/components/prism-core.min.js"></script>
@@ -24,8 +26,6 @@
     <script src="{{$CDNBaseURL}}/prism/1.24.1/plugins/line-numbers/prism-line-numbers.min.js"></script>
     <script src="{{$CDNBaseURL}}/prism/1.24.1/plugins/toolbar/prism-toolbar.min.js"></script>
     <script src="{{$CDNBaseURL}}/prism/1.24.1/plugins/copy-to-clipboard/prism-copy-to-clipboard.min.js"></script>
-    {{range .ScriptPaths}}
-    <script src="{{.}}"></script>
-    {{end}}
+    <script src="/dist/script/bundle.min.js"></script>
   </body>
 </html>

@@ -1,23 +1,28 @@
-TMP_DIR := tmp
-DIST_DIR := dist
-WEBSITE_DIR := website
-PRISM_DIR := prism
+TMP_DIR := ./tmp
+DIST_DIR := ./dist
+WEBSITE_DIR := ./website
 DIST_SCRIPT_DIR := $(DIST_DIR)/script
 DIST_STYLE_DIR := $(DIST_DIR)/style
 WEBSITE_SCRIPT_DIR := $(WEBSITE_DIR)/script
 WEBSITE_STYLE_DIR := $(WEBSITE_DIR)/style
-WEBSITE_SCRIPT_SRC := $(shell find website/script -name "*.js")
+WEBSITE_STYLE_SRC := $(shell find $(DIST_STYLE_DIR) -name "*.css")
+WEBSITE_SCRIPT_SRC := $(shell find $(WEBSITE_SCRIPT_DIR) -name "*.js")
+
 
 airless := false
 .PHONY: debug
 debug: clean
 	mkdir -p $(DIST_STYLE_DIR)
-	ln -sf ../$(WEBSITE_SCRIPT_DIR) $(DIST_SCRIPT_DIR)
+	mkdir -p $(DIST_SCRIPT_DIR)
+	ln -sf bundle.css $(DIST_STYLE_DIR)/bundle.min.css
+	ln -sf ../../$(WEBSITE_SCRIPT_DIR)/theme.js $(DIST_SCRIPT_DIR)/theme.min.js
+	ln -sf ../../$(WEBSITE_SCRIPT_DIR)/main.js $(DIST_SCRIPT_DIR)/bundle.min.js
 	@if [ $(airless) = true ]; then \
 		$(MAKE) sass watchsass=true; \
 	else \
 		$(MAKE) -j2 sass watchsass=true air; \
 	fi;
+
 
 .PHONY: release
 release: clean
@@ -55,14 +60,17 @@ migrate:
 
 .PHONY: uglifycss
 uglifycss: $(WEBSITE_STYLE_SRC)
+	echo $(WEBSITE_STYLE_SRC)
 	$(call install-if-needed,uglifycss,npm install uglifycss -g)
 	uglifycss $(DIST_STYLE_DIR)/bundle.css > $(DIST_STYLE_DIR)/bundle.min.css
 
 
 .PHONY: uglifyjs
 uglifyjs: $(WEBSITE_SCRIPT_SRC)
+	echo $(WEBSITE_SCRIPT_SRC)
 	$(call install-if-needed,uglifyjs,npm install uglify-js -g)
-	uglifyjs $(WEBSITE_SCRIPT_SRC) -o $(DIST_SCRIPT_DIR)/bundle.min.js
+	uglifyjs --compress --mangle --toplevel $(WEBSITE_SCRIPT_DIR)/theme.js > $(DIST_SCRIPT_DIR)/theme.min.js
+	uglifyjs --compress --mangle --toplevel $(WEBSITE_SCRIPT_DIR)/main.js > $(DIST_SCRIPT_DIR)/bundle.min.js
 
 
 .PHONY: test

@@ -54,6 +54,7 @@ $container-max-widths: (
 
 // Add additional custom.
 @import "base";
+@import "theme";
 @import "home";
 @import "article";
 @import "custom";
