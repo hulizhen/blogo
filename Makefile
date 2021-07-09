@@ -3,8 +3,10 @@ DIST_DIR := ./dist
 WEBSITE_DIR := ./website
 DIST_SCRIPT_DIR := $(DIST_DIR)/script
 DIST_STYLE_DIR := $(DIST_DIR)/style
+DIST_ASSET_DIR := $(DIST_DIR)/asset
 WEBSITE_SCRIPT_DIR := $(WEBSITE_DIR)/script
 WEBSITE_STYLE_DIR := $(WEBSITE_DIR)/style
+WEBSITE_ASSET_DIR := $(WEBSITE_DIR)/asset
 WEBSITE_STYLE_SRC := $(shell find $(DIST_STYLE_DIR) -name "*.css")
 WEBSITE_SCRIPT_SRC := $(shell find $(WEBSITE_SCRIPT_DIR) -name "*.js")
 
@@ -17,6 +19,7 @@ debug: clean
 	ln -sf bundle.css $(DIST_STYLE_DIR)/bundle.min.css
 	ln -sf ../../$(WEBSITE_SCRIPT_DIR)/theme.js $(DIST_SCRIPT_DIR)/theme.min.js
 	ln -sf ../../$(WEBSITE_SCRIPT_DIR)/main.js $(DIST_SCRIPT_DIR)/bundle.min.js
+	ln -sf ../$(WEBSITE_ASSET_DIR) $(DIST_ASSET_DIR)
 	@if [ $(airless) = true ]; then \
 		$(MAKE) sass watchsass=true; \
 	else \
@@ -28,6 +31,7 @@ debug: clean
 release: clean
 	mkdir -p $(DIST_STYLE_DIR)
 	mkdir -p $(DIST_SCRIPT_DIR)
+	cp -a $(WEBSITE_ASSET_DIR) $(DIST_ASSET_DIR)
 	$(MAKE) sass
 	$(MAKE) uglifycss
 	$(MAKE) uglifyjs

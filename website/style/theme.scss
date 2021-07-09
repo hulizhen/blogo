@@ -1,18 +1,22 @@
 // Theme colors
 $dark-colors: (
   primary: #66de93,
+  // primary: #ff9a76,
+  // primary: #28DF99,
+  // primary: #32E0C4,
   background: #292c34,
-  title: #e5e5e6,
-  text: #b1bac3,
-  description: #696969,
+  title: #ffffff,
+  text: #e5e5e6,
+  description: #696969
 );
 
 $light-colors: (
-  primary: #66de93,
+  // primary: #66de93,
+  primary: #03C4A1,
   background: #ffffff,
-  title: #e5e5e6,
-  text: #b1bac3,
-  description: #696969,
+  title: #262626,
+  text: #434343,
+  description: #696969
 );
 
 // Theme mixins
@@ -31,6 +35,10 @@ body {
   @include t(color, text);
 }
 
+header {
+  background-color: inherit;
+}
+
 .page-item {
   & .page-link,
   & .form-control {
@@ -46,12 +54,16 @@ body {
   }
 }
 
-a.navbar-brand,
-a.nav-link.active {
-	@include t(color, title);
-}
-
 a {
+  // &.navbar-brand,
+  &.nav-link.active {
+    @include t(color, title);
+  }
+
+  &.nav-link {
+    @include t(color, text);
+  }
+
   @include t(color, primary);
 }
 
@@ -62,4 +74,9 @@ h4,
 h5,
 h6 {
   @include t(color, title);
+}
+
+#theme-toggler {
+  font-size: 20px;
+  @include t(color, primary);
 }

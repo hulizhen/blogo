@@ -1,25 +1,42 @@
-.article-preview {
-  margin: 8px 0;
-}
+.home {
+  & .article-preview {
+    margin: 8px 0;
+  }
 
-.article-footer {
-  font-size: small;
-}
+  & .article-footer {
+    font-size: small;
+  }
 
-.article-categories {
-  margin-right: 8px;
-}
+  & .article-categories {
+    margin-right: 8px;
+  }
 
-.published-date {
-  font-size: small;
-}
+  & .published-date {
+    font-size: small;
+  }
 
-a.article-title {
-  &,
-  :hover,
-  :visited,
-  :active {
-    color: inherit;
-    text-decoration: none;
+  & a.article-title {
+    &,
+    :hover,
+    :visited,
+    :active {
+      color: inherit;
+      text-decoration: none;
+    }
+  }
+
+  & .card-body {
+    padding-left: 3px;
+    padding-right: 3px;
+  }
+
+  & ul {
+    padding: 0;
+    margin: 0;
+    & li {
+      list-style-type: none;
+      padding: 0;
+      margin: 0;
+    }
   }
 }
