@@ -7,12 +7,12 @@ $dark-colors: (
   background: #292c34,
   title: #ffffff,
   text: #e5e5e6,
-  description: #696969
+  description: #696969,
 );
 
 $light-colors: (
   // primary: #66de93,
-  primary: #03C4A1,
+  primary: #03c4a1,
   background: #ffffff,
   title: #262626,
   text: #434343,
@@ -35,7 +35,7 @@ body {
   @include t(color, text);
 }
 
-header {
+.header {
   background-color: inherit;
 }
 

@@ -13,16 +13,20 @@ const updateTheme = (toggle) => {
 
 window.onload = () => {
   const themeToggler = document.getElementById("theme-toggler");
-  themeToggler.updateStatus = function () {
+  const updateStatus = () => {
     const sunIcon = "bi bi-sun-fill";
     const moonIcon = "bi bi-moon-fill";
-    this.className = getDarkMode() ? moonIcon : sunIcon;
+    const dark = getDarkMode();
+    navbar = document.getElementById("navbar").classList;
+    navbar.remove(dark ? "navbar-light" : "navbar-dark");
+    navbar.add(dark ? "navbar-dark" : "navbar-light");
+    themeToggler.className = dark ? moonIcon : sunIcon;
   };
   themeToggler.addEventListener("click", () => {
     updateTheme(true);
-    themeToggler.updateStatus();
+    updateStatus();
   });
-  themeToggler.updateStatus();
+  updateStatus();
 };
 
 updateTheme(false);
