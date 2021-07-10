@@ -20,12 +20,12 @@ $light-colors: (
 );
 
 // Theme mixins
-@mixin t($attr, $value) {
+@mixin t($attr, $value, $alpha: 1) {
   [data-theme="light"] & {
-    #{$attr}: map-get($light-colors, $value);
+    #{$attr}: rgb(map-get($light-colors, $value), $alpha);
   }
   [data-theme="dark"] & {
-    #{$attr}: map-get($dark-colors, $value);
+    #{$attr}: rgb(map-get($dark-colors, $value), $alpha);
   }
 }
 
@@ -37,6 +37,10 @@ body {
 
 .header {
   background-color: inherit;
+}
+
+::selection {
+  @include t(background-color, primary, 0.3);
 }
 
 .page-item {
