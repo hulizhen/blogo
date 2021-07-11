@@ -5,6 +5,7 @@ $dark-colors: (
   // primary: #28DF99,
   // primary: #32E0C4,
   background: #292c34,
+  code: #383c48,
   title: #ffffff,
   text: #e5e5e6,
   description: #696969,
@@ -14,6 +15,7 @@ $light-colors: (
   // primary: #66de93,
   primary: #03c4a1,
   background: #ffffff,
+  code: #e5e5e6,
   title: #262626,
   text: #434343,
   description: #696969
@@ -86,6 +88,13 @@ a {
   }
 
   @include t(color, primary);
+}
+
+code:not([class*="language-"]) {
+  @include t(background-color, code);
+  @include t(color, text);
+  border-radius: 4px;
+  padding: 0.2em;
 }
 
 h1,
