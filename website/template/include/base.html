@@ -12,10 +12,9 @@
     <link rel="stylesheet" href="{{$CDNBaseURL}}/prism/1.24.1/plugins/line-numbers/prism-line-numbers.min.css" />
     <link rel="stylesheet" href="{{$CDNBaseURL}}/prism/1.24.1/plugins/toolbar/prism-toolbar.min.css" />
     <link rel="stylesheet" href="/dist/style/bundle.min.css" />
+    <script src="/dist/script/theme.min.js"></script>
   </head>
   <body class="d-flex flex-column h-100 line-numbers">
-    <script src="/dist/script/theme.min.js"></script>
-
     <header class="header sticky-top">{{block "header" .}} {{end}}</header>
     <main class="main container">{{block "main" .}} {{end}}</main>
     <footer class="footer mt-auto py-3">{{block "footer" .}} {{end}}</footer>

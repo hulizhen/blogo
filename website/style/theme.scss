@@ -30,6 +30,18 @@ $light-colors: (
 }
 
 // Theme customizations
+[data-theme="dark"] {
+  .form-control:focus {
+    box-shadow: 0 0 0 2px map-get($dark-colors, primary);
+  }
+}
+
+[data-theme="light"] {
+  .form-control:focus {
+    box-shadow: 0 0 0 2px map-get($light-colors, primary);
+  }
+}
+
 body {
   @include t(background-color, background);
   @include t(color, text);
@@ -39,27 +51,32 @@ body {
   background-color: inherit;
 }
 
-::selection {
-  @include t(background-color, primary, 0.3);
-}
-
 .page-item {
-  & .page-link,
-  & .form-control {
+  .page-link,
+  .form-control {
     background-color: inherit;
     color: inherit;
   }
-  & .form-control {
+
+  .form-control {
     @include t(border-color, description);
   }
+
   &.disabled .page-link {
     background-color: inherit;
     @include t(color, description);
   }
+
+  a:focus {
+    box-shadow: none;
+  }
 }
 
 a {
-  // &.navbar-brand,
+  &.nav-link.active {
+    font-weight: 500;
+  }
+
   &.nav-link.active {
     @include t(color, title);
   }
@@ -83,4 +100,8 @@ h6 {
 #theme-toggler {
   font-size: 20px;
   @include t(color, primary);
+}
+
+::selection {
+  @include t(background-color, primary, 0.3);
 }
