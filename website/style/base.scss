@@ -1,3 +1,18 @@
 .footer-content {
-  width: fit-content;
+  display: flex;
+
+  @include media-breakpoint-up(xl) {
+    justify-content: center;
+
+    & > *:first-child::after {
+      content: " | ";
+      white-space: pre;
+    }
+  }
+
+  @include media-breakpoint-down(xl) {
+    font-size: small;
+    flex-direction: column;
+    align-items: center;
+  }
 }
