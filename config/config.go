@@ -21,6 +21,7 @@ type website struct {
 	FaviconPath     string `toml:"favicon_path" blogo:"tilde"`
 	LogoPath        string `toml:"logo_path" blogo:"tilde"`
 	BlogRepoPath    string `toml:"blog_repo_path" blogo:"tilde"`
+	BlogRepoBranch  string `toml:"blog_repo_branch"`
 	TemplatePath    string `toml:"template_path" blogo:"tilde"`
 }
 
