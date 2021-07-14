@@ -40,7 +40,7 @@ type Article struct {
 	Tags        string        `db:"tags"`
 	Pinned      bool          `db:"pinned"`
 	Draft       bool          `db:"draft"`
-	PublishedTS time.Time     `db:"published_ts"`
+	PublishedAt time.Time     `db:"published_at"`
 }
 
 const (
@@ -112,8 +112,8 @@ func NewArticle(base string, path string, entry fs.DirEntry) (article *Article, 
 	return
 }
 
-func (a *Article) ShortPublishedTS() string {
-	return xtime.ShortFormat(a.PublishedTS)
+func (a *Article) ShortPublicationDate() string {
+	return xtime.ShortFormat(a.PublishedAt)
 }
 
 func (a *Article) Href() string {
@@ -127,7 +127,7 @@ func (a *Article) updateMetadata(am *articleMetadata) {
 	a.Tags = strings.Join(am.Tags, tagDelimiter)
 	a.Pinned = am.Pinned
 	a.Draft = am.Draft
-	a.PublishedTS = am.Date
+	a.PublishedAt = am.Date
 }
 
 func isWhitespace(c byte) bool {
@@ -218,9 +218,9 @@ func NewArticleStore(db *sqlx.DB, cfg *config.Config) (*ArticleStore, error) {
 		if err == nil {
 			_, err = db.NamedExec(`
 				REPLACE INTO article(
-					id, slug, title, content, preview, categories, tags, pinned, draft, published_ts
+					id, slug, title, content, preview, categories, tags, pinned, draft, published_at
 				) VALUES(
-					:id, :slug, :title, :content, :preview, :categories, :tags, :pinned, :draft, :published_ts
+					:id, :slug, :title, :content, :preview, :categories, :tags, :pinned, :draft, :published_at
 				)`,
 				article,
 			)
@@ -234,7 +234,7 @@ func NewArticleStore(db *sqlx.DB, cfg *config.Config) (*ArticleStore, error) {
 }
 
 func (s *ArticleStore) ReadArticles(limit int, offset int) ([]*Article, error) {
-	rows, err := s.db.Queryx(`SELECT * FROM article ORDER BY published_ts DESC LIMIT ? OFFSET ?`, limit, offset*limit)
+	rows, err := s.db.Queryx(`SELECT * FROM article ORDER BY published_at DESC LIMIT ? OFFSET ?`, limit, offset*limit)
 	if err != nil {
 		return nil, err
 	}
