@@ -10,6 +10,7 @@ import (
 	"blogo/config"
 	"blogo/router/route"
 	"blogo/router/route/page"
+	"blogo/router/route/webhook"
 	"blogo/store"
 
 	"github.com/gin-contrib/multitemplate"
@@ -57,13 +58,16 @@ func (r *Router) Run() (err error) {
 	e.StaticFile("/favicon.ico", c.Website.FaviconPath)
 	e.StaticFile(r.LogoPath(), c.Website.LogoPath)
 
-	// Register routes.
+	// Register page routes.
 	r.registerRoute("/", page.NewHomeRoute(r.Route))
 	r.registerRoute("/archives", page.NewArchiveRoute(r.Route))
 	r.registerRoute("/categories", page.NewCategoryRoute(r.Route))
 	r.registerRoute("/tags", page.NewTagRoute(r.Route))
 	r.registerRoute("/about", page.NewAboutRoute(r.Route))
 	r.registerRoute("/articles/:slug", page.NewArticleRoute(r.Route))
+
+	// Register webhook routes.
+	r.registerRoute("/webhook/github", webhook.NewGitHubRoute(r.Route))
 
 	// Load templates.
 	err = r.loadTemplates()

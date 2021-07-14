@@ -52,7 +52,7 @@ func TestScanArticle(t *testing.T) {
 			os.Remove(path)
 		}()
 
-		metadata, content := scanArticle(path)
+		metadata, content := parseArticle(path)
 		if metadata != c.metadata || content != c.content {
 			t.Errorf("[%v] Failed to scan article.", i)
 		}

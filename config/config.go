@@ -20,6 +20,7 @@ type website struct {
 	ArticlePageSize int    `toml:"article_page_size"`
 	FaviconPath     string `toml:"favicon_path" blogo:"tilde"`
 	LogoPath        string `toml:"logo_path" blogo:"tilde"`
+	BlogRepoURL     string `toml:"blog_repo_url"`
 	BlogRepoPath    string `toml:"blog_repo_path" blogo:"tilde"`
 	BlogRepoBranch  string `toml:"blog_repo_branch"`
 	TemplatePath    string `toml:"template_path" blogo:"tilde"`

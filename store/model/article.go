@@ -64,8 +64,8 @@ func NewArticle(base string, path string, entry fs.DirEntry) (article *Article, 
 		id = stat.Birthtimespec.Nano()
 	}
 
-	// Scan article to extract metadata and content.
-	metadata, content := scanArticle(path)
+	// Parse article to extract metadata and content.
+	metadata, content := parseArticle(path)
 	if err != nil {
 		return
 	}
@@ -134,8 +134,8 @@ func isWhitespace(c byte) bool {
 	return scanner.GoWhitespace&(1<<c) != 0
 }
 
-// scanArticle scans the *.md article file and extracts the metadata and content.
-func scanArticle(path string) (metadata string, content string) {
+// parseArticle parses the *.md article file and extracts the metadata and content.
+func parseArticle(path string) (metadata string, content string) {
 	f, err := os.Open(path)
 	if err != nil {
 		return
@@ -194,13 +194,23 @@ func scanArticle(path string) (metadata string, content string) {
 }
 
 type ArticleStore struct {
-	db *sqlx.DB
+	config *config.Config
+	db     *sqlx.DB
 }
 
 func NewArticleStore(db *sqlx.DB, cfg *config.Config) (*ArticleStore, error) {
-	repoPath := cfg.Website.BlogRepoPath
+	s := &ArticleStore{
+		config: cfg,
+		db:     db,
+	}
+	err := s.ScanArticles()
+	return s, err
+}
+
+func (s *ArticleStore) ScanArticles() error {
+	repoPath := s.config.Website.BlogRepoPath
 	if _, err := os.Stat(repoPath); os.IsNotExist(err) {
-		return nil, err
+		return err
 	}
 
 	// Walk the article file tree in repo and parse them.
@@ -216,7 +226,7 @@ func NewArticleStore(db *sqlx.DB, cfg *config.Config) (*ArticleStore, error) {
 
 		article, err := NewArticle(repoPath, p, d)
 		if err == nil {
-			_, err = db.NamedExec(`
+			_, err = s.db.NamedExec(`
 				REPLACE INTO article(
 					id, slug, title, content, preview, categories, tags, pinned, draft, published_at
 				) VALUES(
@@ -228,9 +238,7 @@ func NewArticleStore(db *sqlx.DB, cfg *config.Config) (*ArticleStore, error) {
 		return err
 	})
 
-	// TODO: Start listening repo webhook to rescan the articles.
-
-	return &ArticleStore{db: db}, err
+	return err
 }
 
 func (s *ArticleStore) ReadArticles(limit int, offset int) ([]*Article, error) {
