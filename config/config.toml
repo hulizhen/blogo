@@ -14,7 +14,8 @@ template_path = "website/template"
 
 [repository]
 local_path = "~/.blogo/blog"
-#remote_url = "https://github.com/${username}/${reponame}.git"
+# Blog repo remote URL, starting with 'https' and ending with '.git'.
+# remote_url = "https://github.com/${username}/${reponame}.git"
 branch = "main"
 
 [server]

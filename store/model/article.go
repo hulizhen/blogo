@@ -4,6 +4,7 @@ import (
 	"blogo/config"
 	"blogo/internal/markdown"
 	"blogo/internal/xtime"
+	"blogo/service"
 	"bufio"
 	"bytes"
 	"html/template"
@@ -208,12 +209,13 @@ func NewArticleStore(db *sqlx.DB, cfg *config.Config) (*ArticleStore, error) {
 }
 
 func (s *ArticleStore) ScanArticles() error {
-	repoPath := s.config.Repository.LocalPath
-	if _, err := os.Stat(repoPath); os.IsNotExist(err) {
+	repoService := service.NewRepoService(s.config)
+	if err := repoService.UpdateRepo(); err != nil {
 		return err
 	}
 
 	// Walk the article file tree in repo and parse them.
+	repoPath := s.config.Repository.LocalPath
 	articlePath := path.Join(repoPath, "articles")
 	err := filepath.WalkDir(articlePath, func(p string, d fs.DirEntry, err error) error {
 		basename := d.Name()

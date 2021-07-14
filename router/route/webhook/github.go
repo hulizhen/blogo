@@ -2,9 +2,7 @@ package webhook
 
 import (
 	"blogo/router/route"
-	"fmt"
 	"net/http"
-	"os/exec"
 	"strings"
 
 	"github.com/gin-gonic/gin"
@@ -22,7 +20,7 @@ func (r *GitHubRoute) POST(c *gin.Context) {
 	payload := make(gin.H)
 	err := c.BindJSON(&payload)
 	if err != nil {
-		c.AbortWithStatus(http.StatusBadRequest)
+		c.AbortWithStatusJSON(http.StatusBadRequest, err)
 		return
 	}
 	ref, ok := payload["ref"].(string)
@@ -39,15 +37,9 @@ func (r *GitHubRoute) POST(c *gin.Context) {
 
 	// Update local repo.
 	if url == r.Config.Repository.RemoteURL && branch == r.Config.Repository.Branch {
-		cmd := fmt.Sprintf("cd %v && git pull origin %v", r.Config.Repository.LocalPath, r.Config.Repository.Branch)
-		err := exec.Command("/bin/sh", "-c", cmd).Run()
-		if err != nil {
-			c.AbortWithStatus(http.StatusInternalServerError)
-			return
-		}
 		err = r.Store.ArticleStore.ScanArticles()
 		if err != nil {
-			c.AbortWithStatus(http.StatusInternalServerError)
+			c.AbortWithStatusJSON(http.StatusInternalServerError, err)
 			return
 		}
 	}
