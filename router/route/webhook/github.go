@@ -38,8 +38,8 @@ func (r *GitHubRoute) POST(c *gin.Context) {
 	branch := strings.TrimPrefix(ref, "refs/heads/")
 
 	// Update local repo.
-	if url == r.Config.Website.BlogRepoURL && branch == r.Config.Website.BlogRepoBranch {
-		cmd := fmt.Sprintf("cd %v && git pull origin %v", r.Config.Website.BlogRepoPath, r.Config.Website.BlogRepoBranch)
+	if url == r.Config.Repository.RemoteURL && branch == r.Config.Repository.Branch {
+		cmd := fmt.Sprintf("cd %v && git pull origin %v", r.Config.Repository.LocalPath, r.Config.Repository.Branch)
 		err := exec.Command("/bin/sh", "-c", cmd).Run()
 		if err != nil {
 			c.AbortWithStatus(http.StatusInternalServerError)

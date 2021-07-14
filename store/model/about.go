@@ -13,7 +13,7 @@ type AboutStore struct {
 }
 
 func NewAboutStore(cfg *config.Config) (*AboutStore, error) {
-	p := filepath.Join(cfg.Website.BlogRepoPath, "about.toml")
+	p := filepath.Join(cfg.Repository.LocalPath, "about.toml")
 	b, err := ioutil.ReadFile(p)
 	if err != nil {
 		return nil, err

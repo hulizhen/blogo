@@ -208,7 +208,7 @@ func NewArticleStore(db *sqlx.DB, cfg *config.Config) (*ArticleStore, error) {
 }
 
 func (s *ArticleStore) ScanArticles() error {
-	repoPath := s.config.Website.BlogRepoPath
+	repoPath := s.config.Repository.LocalPath
 	if _, err := os.Stat(repoPath); os.IsNotExist(err) {
 		return err
 	}

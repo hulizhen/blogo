@@ -20,10 +20,13 @@ type website struct {
 	ArticlePageSize int    `toml:"article_page_size"`
 	FaviconPath     string `toml:"favicon_path" blogo:"tilde"`
 	LogoPath        string `toml:"logo_path" blogo:"tilde"`
-	BlogRepoURL     string `toml:"blog_repo_url"`
-	BlogRepoPath    string `toml:"blog_repo_path" blogo:"tilde"`
-	BlogRepoBranch  string `toml:"blog_repo_branch"`
 	TemplatePath    string `toml:"template_path" blogo:"tilde"`
+}
+
+type repository struct {
+	LocalPath string `toml:"local_path" blogo:"tilde"`
+	RemoteURL string `toml:"remote_url"`
+	Branch    string `toml:"branch"`
 }
 
 type server struct {
@@ -40,9 +43,10 @@ type mysql struct {
 
 // Config provides the configurations for the application.
 type Config struct {
-	Website website `toml:"website"`
-	Server  server  `toml:"server"`
-	Mysql   mysql   `toml:"mysql"`
+	Website    website    `toml:"website"`
+	Repository repository `toml:"repository"`
+	Server     server     `toml:"server"`
+	Mysql      mysql      `toml:"mysql"`
 }
 
 const defaultConfigPath = "./config/config.toml"

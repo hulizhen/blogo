@@ -10,9 +10,12 @@ author = "Anonymous"
 article_page_size = 10
 favicon_path = "~/.blogo/favicon.ico"
 logo_path = "~/.blogo/logo.svg"
-blog_repo_path = "~/.blogo/blog"
-blog_repo_branch = "main"
 template_path = "website/template"
+
+[repository]
+local_path = "~/.blogo/blog"
+#remote_url = "https://github.com/${username}/${reponame}.git"
+branch = "main"
 
 [server]
 port = 8080
