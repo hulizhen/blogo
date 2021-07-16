@@ -1,2 +1,2 @@
--- Remove table article if exists.
-DROP TABLE article;
+-- Remove articles table if exists.
+DROP TABLE articles;

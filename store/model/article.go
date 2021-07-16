@@ -229,7 +229,7 @@ func (s *ArticleStore) ScanArticles() error {
 		article, err := NewArticle(repoPath, p, d)
 		if err == nil {
 			_, err = s.db.NamedExec(`
-				REPLACE INTO article(
+				REPLACE INTO articles(
 					id, slug, title, content, preview, categories, tags, pinned, draft, published_at
 				) VALUES(
 					:id, :slug, :title, :content, :preview, :categories, :tags, :pinned, :draft, :published_at
@@ -244,7 +244,7 @@ func (s *ArticleStore) ScanArticles() error {
 }
 
 func (s *ArticleStore) ReadArticles(limit int, offset int) ([]*Article, error) {
-	rows, err := s.db.Queryx(`SELECT * FROM article ORDER BY published_at DESC LIMIT ? OFFSET ?`, limit, offset*limit)
+	rows, err := s.db.Queryx(`SELECT * FROM articles ORDER BY published_at DESC LIMIT ? OFFSET ?`, limit, offset*limit)
 	if err != nil {
 		return nil, err
 	}
@@ -263,13 +263,13 @@ func (s *ArticleStore) ReadArticles(limit int, offset int) ([]*Article, error) {
 
 func (s *ArticleStore) ReadArticleCount() (int, error) {
 	var count int
-	err := s.db.Get(&count, `SELECT COUNT(*) FROM article`)
+	err := s.db.Get(&count, `SELECT COUNT(*) FROM articles`)
 	return count, err
 }
 
 func (s *ArticleStore) ReadArticle(slug string) (*Article, error) {
 	var article Article
-	if err := s.db.Get(&article, `SELECT * FROM article WHERE slug=?`, slug); err != nil {
+	if err := s.db.Get(&article, `SELECT * FROM articles WHERE slug=?`, slug); err != nil {
 		return nil, err
 	}
 	return &article, nil

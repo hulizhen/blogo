@@ -1,5 +1,5 @@
--- Create table article if not exists.
-CREATE TABLE IF NOT EXISTS article (
+-- Create articles table if not exists.
+CREATE TABLE IF NOT EXISTS articles (
 	id BIGINT NOT NULL,
 	slug VARCHAR(255) NOT NULL,
 	title VARCHAR(255) NOT NULL,
