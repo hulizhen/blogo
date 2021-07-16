@@ -3,6 +3,7 @@
 BloGo is a lightweight static blog engine built with Go.
 
 # Features
+
 - [x] Support customizing by editing `~/.blogo/config.toml` file.
 - [x] Support parsing article content in Markdown format.
 - [x] Support parsing metadata at the beginning of article in TOML format.
@@ -20,3 +21,8 @@ BloGo is a lightweight static blog engine built with Go.
 - [ ] Support comments.
 - [ ] Support multilevel cateory.
 - [ ] Support i18n.
+
+# Acknowledgements
+
+BloGo takes advantage of many brilliant open source libraries which save me a lot of works.
+Check out the `go.mod` file to get a full list of them.
