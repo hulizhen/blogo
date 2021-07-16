@@ -1,6 +1,11 @@
 const themeKey = "blogo_theme";
-const getDarkMode = () => localStorage[themeKey] === "dark";
-const setDarkMode = (dark) => (localStorage[themeKey] = dark ? "dark" : "light");
+const getDarkMode = () => {
+  const theme = localStorage[themeKey];
+  return theme === undefined || theme === "dark";
+};
+const setDarkMode = (dark) => {
+  localStorage[themeKey] = dark ? "dark" : "light";
+};
 
 const updateTheme = (toggle) => {
   let dark = getDarkMode();
@@ -31,7 +36,7 @@ document.addEventListener("DOMContentLoaded", function () {
     updateStatus();
   });
   updateStatus();
-  document.documentElement.removeAttribute("style")
+  document.documentElement.removeAttribute("style");
 });
 
 updateTheme(false);
