@@ -19,8 +19,10 @@ BloGo is a lightweight static blog engine built with Go.
 - [ ] Show article read time.
 - [ ] Support customizing 404 page.
 - [ ] Support comments.
-- [ ] Support multilevel cateory.
+- [ ] Support multilevel cateories.
 - [ ] Support i18n.
+- [ ] Support administrator login and logout.
+- [ ] Support listing images from OSS (Object Storage Service).
 
 # Acknowledgements
 
