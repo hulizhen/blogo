@@ -6,7 +6,11 @@ import (
 	"testing"
 )
 
-func TestParseConfigFile(t *testing.T) {
+func TestNew(t *testing.T) {
+
+}
+
+func TestParseConfigFilex(t *testing.T) {
 	cases := []struct {
 		text string
 		must bool
@@ -19,11 +23,7 @@ func TestParseConfigFile(t *testing.T) {
 	path := "/tmp/blogo-test-config.toml"
 	for i, c := range cases {
 		f, _ := os.Create(path)
-		f.Write([]byte(c.text))
-		defer func() {
-			f.Close()
-			os.Remove(path)
-		}()
+		_, _ = f.Write([]byte(c.text))
 
 		cfg := Config{Server: server{Port: 8000}}
 		if err := parseConfigFile(path, &cfg, c.must); c.must && err != nil {
@@ -32,10 +32,13 @@ func TestParseConfigFile(t *testing.T) {
 		if cfg.Server.Port != c.port {
 			t.Errorf("[%v] The port in config should be '%d'.", i, c.port)
 		}
+
+		_ = f.Close()
+		_ = os.Remove(path)
 	}
 }
 
-func TestExpandTildes(t *testing.T) {
+func TestExpandTildesx(t *testing.T) {
 	type embeded struct {
 		InnerString string
 		InnerPath   string `blogo:"tilde"`

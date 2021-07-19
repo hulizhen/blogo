@@ -46,15 +46,14 @@ func TestScanArticle(t *testing.T) {
 	path := "/tmp/blogo-test-scan-article.md"
 	for i, c := range cases {
 		f, _ := os.Create(path)
-		f.Write([]byte(c.text))
-		defer func() {
-			f.Close()
-			os.Remove(path)
-		}()
+		_, _ = f.Write([]byte(c.text))
 
-		metadata, content := parseArticle(path)
+		metadata, content, _ := parseArticle(path)
 		if metadata != c.metadata || content != c.content {
 			t.Errorf("[%v] Failed to scan article.", i)
 		}
+
+		_ = f.Close()
+		_ = os.Remove(path)
 	}
 }

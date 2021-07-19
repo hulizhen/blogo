@@ -1,6 +1,6 @@
-TMP_DIR := ./tmp
-DIST_DIR := ./dist
-WEBSITE_DIR := ./website
+TMP_DIR := tmp
+DIST_DIR := dist
+WEBSITE_DIR := website
 DIST_SCRIPT_DIR := $(DIST_DIR)/script
 DIST_STYLE_DIR := $(DIST_DIR)/style
 DIST_ASSET_DIR := $(DIST_DIR)/asset

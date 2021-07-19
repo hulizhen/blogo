@@ -51,8 +51,8 @@ const (
 	tagDelimiter      = ","
 )
 
-// New creates a Article instance with provided repo path `base`, article `path` and article `entry`.
-func NewArticle(base string, path string, entry fs.DirEntry) (article *Article, err error) {
+// NewArticle creates a Article instance with provided repo path `base`, article `path` and article `entry`.
+func NewArticle(path string, entry fs.DirEntry) (article *Article, err error) {
 	// Generate ID with birth timestamp.
 	id := int64(0)
 	info, err := entry.Info()
@@ -66,7 +66,7 @@ func NewArticle(base string, path string, entry fs.DirEntry) (article *Article, 
 	}
 
 	// Parse article to extract metadata and content.
-	metadata, content := parseArticle(path)
+	metadata, content, err := parseArticle(path)
 	if err != nil {
 		return
 	}
@@ -136,17 +136,19 @@ func isWhitespace(c byte) bool {
 }
 
 // parseArticle parses the *.md article file and extracts the metadata and content.
-func parseArticle(path string) (metadata string, content string) {
+func parseArticle(path string) (metadata string, content string, err error) {
 	f, err := os.Open(path)
 	if err != nil {
 		return
 	}
-	defer f.Close()
+	defer func() {
+		err = f.Close()
+	}()
 
 	hasMetadata := false
 	removed := false
-	scanner := bufio.NewScanner(f)
-	scanner.Split(func(data []byte, atEOF bool) (advance int, token []byte, err error) {
+	articleScanner := bufio.NewScanner(f)
+	articleScanner.Split(func(data []byte, atEOF bool) (advance int, token []byte, err error) {
 		if atEOF && len(data) == 0 {
 			return
 		}
@@ -183,8 +185,8 @@ func parseArticle(path string) (metadata string, content string) {
 			}
 		}
 	})
-	for scanner.Scan() {
-		text := strings.TrimSpace(scanner.Text())
+	for articleScanner.Scan() {
+		text := strings.TrimSpace(articleScanner.Text())
 		if hasMetadata && len(metadata) == 0 {
 			metadata = text
 		} else {
@@ -226,7 +228,7 @@ func (s *ArticleStore) ScanArticles() error {
 			return nil
 		}
 
-		article, err := NewArticle(repoPath, p, d)
+		article, err := NewArticle(p, d)
 		if err == nil {
 			_, err = s.db.NamedExec(`
 				REPLACE INTO articles(
