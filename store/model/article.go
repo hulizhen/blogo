@@ -14,6 +14,7 @@ import (
 	"path"
 	"path/filepath"
 	"strings"
+	"sync"
 	"syscall"
 	"text/scanner"
 	"time"
@@ -206,6 +207,7 @@ func NewArticleStore(db *sqlx.DB, cfg *config.Config) (*ArticleStore, error) {
 		config: cfg,
 		db:     db,
 	}
+
 	err := s.ScanArticles()
 	return s, err
 }
@@ -216,7 +218,12 @@ func (s *ArticleStore) ScanArticles() error {
 		return err
 	}
 
-	// Walk the article file tree in repo and parse them.
+	// Walk the file tree of the repo and collect the article file entries.
+	type entry struct {
+		p string
+		d fs.DirEntry
+	}
+	var entries []entry
 	repoPath := s.config.Repository.LocalPath
 	articlePath := path.Join(repoPath, "articles")
 	err := filepath.WalkDir(articlePath, func(p string, d fs.DirEntry, err error) error {
@@ -228,19 +235,35 @@ func (s *ArticleStore) ScanArticles() error {
 			return nil
 		}
 
-		article, err := NewArticle(p, d)
-		if err == nil {
-			_, err = s.db.NamedExec(`
+		entries = append(entries, entry{p, d})
+		return err
+	})
+
+	// Parse the articles concurrently.
+	var wg sync.WaitGroup
+	for _, e := range entries {
+		wg.Add(1)
+		go func(p string, d fs.DirEntry) {
+			defer wg.Done()
+
+			article, err := NewArticle(p, d)
+			if err == nil {
+				_, err = s.db.NamedExec(`
 				REPLACE INTO articles(
 					id, slug, title, content, preview, categories, tags, pinned, draft, published_at
 				) VALUES(
 					:id, :slug, :title, :content, :preview, :categories, :tags, :pinned, :draft, :published_at
 				)`,
-				article,
-			)
-		}
-		return err
-	})
+					article,
+				)
+			}
+
+			if err != nil {
+				log.Panicf("Failed to parse article with error: %v.", err)
+			}
+		}(e.p, e.d)
+	}
+	wg.Wait()
 
 	return err
 }
