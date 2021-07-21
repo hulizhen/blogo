@@ -1,12 +1,12 @@
 TMP_DIR := tmp
 DIST_DIR := dist
-WEBSITE_DIR := website
+WEB_DIR := web
 DIST_SCRIPT_DIR := $(DIST_DIR)/script
 DIST_STYLE_DIR := $(DIST_DIR)/style
 DIST_ASSET_DIR := $(DIST_DIR)/asset
-WEBSITE_SCRIPT_DIR := $(WEBSITE_DIR)/script
-WEBSITE_STYLE_DIR := $(WEBSITE_DIR)/style
-WEBSITE_ASSET_DIR := $(WEBSITE_DIR)/asset
+WEB_SCRIPT_DIR := $(WEB_DIR)/script
+WEB_STYLE_DIR := $(WEB_DIR)/style
+WEB_ASSET_DIR := $(WEB_DIR)/asset
 
 
 airless := false
@@ -15,9 +15,9 @@ debug: clean
 	mkdir -p $(DIST_STYLE_DIR)
 	mkdir -p $(DIST_SCRIPT_DIR)
 	ln -sf bundle.css $(DIST_STYLE_DIR)/bundle.min.css
-	ln -sf ../../$(WEBSITE_SCRIPT_DIR)/theme.js $(DIST_SCRIPT_DIR)/theme.min.js
-	ln -sf ../../$(WEBSITE_SCRIPT_DIR)/main.js $(DIST_SCRIPT_DIR)/bundle.min.js
-	ln -sf ../$(WEBSITE_ASSET_DIR) $(DIST_ASSET_DIR)
+	ln -sf ../../$(WEB_SCRIPT_DIR)/theme.js $(DIST_SCRIPT_DIR)/theme.min.js
+	ln -sf ../../$(WEB_SCRIPT_DIR)/main.js $(DIST_SCRIPT_DIR)/bundle.min.js
+	ln -sf ../$(WEB_ASSET_DIR) $(DIST_ASSET_DIR)
 	@if [ $(airless) = true ]; then \
 		$(MAKE) sass watchsass=true; \
 	else \
@@ -29,7 +29,7 @@ debug: clean
 release: clean
 	mkdir -p $(DIST_STYLE_DIR)
 	mkdir -p $(DIST_SCRIPT_DIR)
-	cp -a $(WEBSITE_ASSET_DIR) $(DIST_ASSET_DIR)
+	cp -a $(WEB_ASSET_DIR) $(DIST_ASSET_DIR)
 	$(MAKE) sass
 	$(MAKE) uglifycss
 	$(MAKE) uglifyjs
@@ -48,9 +48,9 @@ watchsass := false
 sass:
 	$(call install-if-needed,sass,brew install sass/sass/sass)
 	@if [ $(watchsass) = true ]; then \
-		sass --watch $(WEBSITE_STYLE_DIR)/main.scss $(DIST_STYLE_DIR)/bundle.css; \
+		sass --watch $(WEB_STYLE_DIR)/main.scss $(DIST_STYLE_DIR)/bundle.css; \
 	else \
-		sass $(WEBSITE_STYLE_DIR)/main.scss $(DIST_STYLE_DIR)/bundle.css; \
+		sass $(WEB_STYLE_DIR)/main.scss $(DIST_STYLE_DIR)/bundle.css; \
 	fi;
 
 
@@ -69,8 +69,8 @@ uglifycss:
 .PHONY: uglifyjs
 uglifyjs:
 	$(call install-if-needed,uglifyjs,npm install uglify-js -g)
-	uglifyjs --compress --mangle --toplevel $(WEBSITE_SCRIPT_DIR)/theme.js > $(DIST_SCRIPT_DIR)/theme.min.js
-	uglifyjs --compress --mangle --toplevel $(WEBSITE_SCRIPT_DIR)/main.js > $(DIST_SCRIPT_DIR)/bundle.min.js
+	uglifyjs --compress --mangle --toplevel $(WEB_SCRIPT_DIR)/theme.js > $(DIST_SCRIPT_DIR)/theme.min.js
+	uglifyjs --compress --mangle --toplevel $(WEB_SCRIPT_DIR)/main.js > $(DIST_SCRIPT_DIR)/bundle.min.js
 
 
 .PHONY: test
