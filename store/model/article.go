@@ -212,18 +212,14 @@ func NewArticleStore(db *sqlx.DB, cfg *config.Config) (*ArticleStore, error) {
 	return s, err
 }
 
+// ScanArticles walks the artile file tree of the repo and parses them concurrently.
 func (s *ArticleStore) ScanArticles() error {
 	repoService := service.NewRepoService(s.config)
 	if err := repoService.UpdateRepo(); err != nil {
 		return err
 	}
 
-	// Walk the file tree of the repo and collect the article file entries.
-	type entry struct {
-		p string
-		d fs.DirEntry
-	}
-	var entries []entry
+	var wg sync.WaitGroup
 	repoPath := s.config.Repository.LocalPath
 	articlePath := path.Join(repoPath, "articles")
 	err := filepath.WalkDir(articlePath, func(p string, d fs.DirEntry, err error) error {
@@ -235,15 +231,9 @@ func (s *ArticleStore) ScanArticles() error {
 			return nil
 		}
 
-		entries = append(entries, entry{p, d})
-		return err
-	})
-
-	// Parse the articles concurrently.
-	var wg sync.WaitGroup
-	for _, e := range entries {
+		// Parse the articles concurrently.
 		wg.Add(1)
-		go func(p string, d fs.DirEntry) {
+		go func() {
 			defer wg.Done()
 
 			article, err := NewArticle(p, d)
@@ -257,12 +247,12 @@ func (s *ArticleStore) ScanArticles() error {
 					article,
 				)
 			}
-
 			if err != nil {
 				log.Panicf("Failed to parse article with error: %v.", err)
 			}
-		}(e.p, e.d)
-	}
+		}()
+		return err
+	})
 	wg.Wait()
 
 	return err
