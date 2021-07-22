@@ -77,7 +77,7 @@ func (r *Router) Run() (err error) {
 
 	// Run on the specified address:port.
 	a := fmt.Sprintf(":%d", r.Config.Server.Port)
-	r.engine.Run(a)
+	err = r.engine.Run(a)
 	return
 }
 
@@ -113,12 +113,12 @@ func (r *Router) loadTemplates() (err error) {
 		return
 	}
 
-	for _, page := range pages {
+	for _, pg := range pages {
 		// Make a copy of the 'include' slice to avoid sharing and modifing the same backing array.
 		cp := make([]string, len(include))
 		copy(cp, include)
-		files := append(cp, page)
-		name := strings.TrimSuffix(filepath.Base(page), filepath.Ext(page))
+		files := append(cp, pg)
+		name := strings.TrimSuffix(filepath.Base(pg), filepath.Ext(pg))
 		render.AddFromFiles(name, files...)
 		// render.AddFromFilesFuncs(name, r.templateFuncMap(), files...)
 	}
