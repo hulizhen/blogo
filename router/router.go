@@ -101,13 +101,13 @@ func (r *Router) loadTemplates() (err error) {
 	c := r.Config
 	render := multitemplate.NewRenderer()
 
-	p := filepath.Join(c.Website.TemplatePath, "include/*.html")
+	p := filepath.Join(c.Website.TemplatePath, "include/*.gohtml")
 	include, err := filepath.Glob(p)
 	if err != nil {
 		return
 	}
 
-	p = filepath.Join(c.Website.TemplatePath, "page/*.html")
+	p = filepath.Join(c.Website.TemplatePath, "page/*.gohtml")
 	pages, err := filepath.Glob(p)
 	if err != nil {
 		return
