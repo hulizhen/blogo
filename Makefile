@@ -1,23 +1,20 @@
 TMP_DIR := tmp
-DIST_DIR := dist
 WEB_DIR := web
-DIST_SCRIPT_DIR := $(DIST_DIR)/script
-DIST_STYLE_DIR := $(DIST_DIR)/style
-DIST_ASSET_DIR := $(DIST_DIR)/asset
 WEB_SCRIPT_DIR := $(WEB_DIR)/script
 WEB_STYLE_DIR := $(WEB_DIR)/style
-WEB_ASSET_DIR := $(WEB_DIR)/asset
+DIST_DIR := dist
+DIST_SCRIPT_DIR := $(DIST_DIR)/script
+DIST_STYLE_DIR := $(DIST_DIR)/style
+DIST_EMBED_FILE := $(DIST_DIR)/dist.go
+DIST_EMBED_CONTENT := "package dist\n\nimport \"embed\"\n\n//go:embed *\nvar _ embed.FS"
 
 
 airless := false
 .PHONY: debug
-debug: clean
-	mkdir -p $(DIST_STYLE_DIR)
-	mkdir -p $(DIST_SCRIPT_DIR)
+debug: clean prepare
 	ln -sf bundle.css $(DIST_STYLE_DIR)/bundle.min.css
 	ln -sf ../../$(WEB_SCRIPT_DIR)/theme.js $(DIST_SCRIPT_DIR)/theme.min.js
 	ln -sf ../../$(WEB_SCRIPT_DIR)/main.js $(DIST_SCRIPT_DIR)/bundle.min.js
-	ln -sf ../$(WEB_ASSET_DIR) $(DIST_ASSET_DIR)
 	@if [ $(airless) = true ]; then \
 		$(MAKE) sass watchsass=true; \
 	else \
@@ -26,15 +23,19 @@ debug: clean
 
 
 .PHONY: release
-release: clean
-	mkdir -p $(DIST_STYLE_DIR)
-	mkdir -p $(DIST_SCRIPT_DIR)
-	cp -a $(WEB_ASSET_DIR) $(DIST_ASSET_DIR)
+release: clean prepare
+	echo $(DIST_EMBED_CONTENT) > $(DIST_EMBED_FILE)
 	$(MAKE) sass
 	$(MAKE) uglifycss
 	$(MAKE) uglifyjs
 	go build -o $(TMP_DIR)/blogo ./cmd/blogo/
 	GIN_MODE=release $(TMP_DIR)/blogo
+
+
+.PHONY: prepare
+prepare:
+	mkdir -p $(DIST_STYLE_DIR)
+	mkdir -p $(DIST_SCRIPT_DIR)
 
 
 .PHONY: air
@@ -80,7 +81,7 @@ test:
 
 .PHONY: clean
 clean:
-	rm -rf $(DIST_DIR)
+	find $(DIST_DIR)/* -not -name "*.go" -prune -exec rm -rf {} 2>/dev/null \;
 	rm -rf $(TMP_DIR)
 	go mod tidy
 

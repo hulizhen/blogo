@@ -5,5 +5,4 @@ module.exports = {
   singleQuote: false,
   useTabs: false,
   bracketSpacing: true,
-  printWidth: 120,
 };

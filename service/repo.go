@@ -1,10 +1,11 @@
 package service
 
 import (
-	"blogo/config"
 	"fmt"
 	"os"
 	"os/exec"
+
+	"blogo/config"
 )
 
 type RepoService struct {

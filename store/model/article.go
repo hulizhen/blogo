@@ -1,10 +1,6 @@
 package model
 
 import (
-	"blogo/config"
-	"blogo/internal/markdown"
-	"blogo/internal/xtime"
-	"blogo/service"
 	"bufio"
 	"bytes"
 	"html/template"
@@ -18,6 +14,11 @@ import (
 	"syscall"
 	"text/scanner"
 	"time"
+
+	"blogo/config"
+	"blogo/internal/markdown"
+	"blogo/internal/xtime"
+	"blogo/service"
 
 	"github.com/jmoiron/sqlx"
 	"github.com/pelletier/go-toml"
