@@ -5,8 +5,6 @@ WEB_STYLE_DIR := $(WEB_DIR)/style
 DIST_DIR := dist
 DIST_SCRIPT_DIR := $(DIST_DIR)/script
 DIST_STYLE_DIR := $(DIST_DIR)/style
-DIST_EMBED_FILE := $(DIST_DIR)/dist.go
-DIST_EMBED_CONTENT := "package dist\n\nimport \"embed\"\n\n//go:embed *\nvar _ embed.FS"
 
 
 airless := false
@@ -24,7 +22,6 @@ debug: clean prepare
 
 .PHONY: release
 release: clean prepare
-	echo $(DIST_EMBED_CONTENT) > $(DIST_EMBED_FILE)
 	$(MAKE) sass
 	$(MAKE) uglifycss
 	$(MAKE) uglifyjs
@@ -81,7 +78,7 @@ test:
 
 .PHONY: clean
 clean:
-	find $(DIST_DIR)/* -not -name "*.go" -prune -exec rm -rf {} 2>/dev/null \;
+	rm -rf $(DIST_DIR)
 	rm -rf $(TMP_DIR)
 	go mod tidy
 

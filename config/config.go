@@ -1,7 +1,6 @@
 package config
 
 import (
-	"embed"
 	"errors"
 	"io/fs"
 	"log"
@@ -49,9 +48,6 @@ type Config struct {
 	Server     server     `toml:"server"`
 	Mysql      mysql      `toml:"mysql"`
 }
-
-//go:embed config.toml
-var _ embed.FS
 
 const defaultConfigPath = "./config/config.toml"
 const customConfigPath = "~/.blogo/config.toml"

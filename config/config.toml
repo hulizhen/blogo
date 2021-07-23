@@ -10,7 +10,7 @@ author = "Anonymous"
 article_page_size = 10
 favicon_path = "~/.blogo/favicon.ico"
 logo_path = "~/.blogo/logo.svg"
-template_path = "router/template"
+template_path = "web/template"
 
 [repository]
 local_path = "~/.blogo/blog"

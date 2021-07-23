@@ -1,7 +1,6 @@
 package router
 
 import (
-	"embed"
 	"fmt"
 	"net/http"
 	"path/filepath"
@@ -35,9 +34,6 @@ var validHTTPMethods = [...]string{
 	http.MethodOptions,
 	http.MethodTrace,
 }
-
-//go:embed template
-var _ embed.FS
 
 const distFilePath = "/dist"
 
