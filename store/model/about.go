@@ -1,7 +1,7 @@
 package model
 
 import (
-	"blogo/config"
+	"github.com/hulizhen/blogo/config"
 	"io/ioutil"
 	"path/filepath"
 

@@ -1,8 +1,8 @@
 package page
 
 import (
-	"blogo/pkg/pagination"
-	"blogo/router/route"
+	"github.com/hulizhen/blogo/pkg/pagination"
+	"github.com/hulizhen/blogo/router/route"
 	"net/http"
 	"strconv"
 

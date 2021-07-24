@@ -1,10 +1,11 @@
 package main
 
 import (
-	"blogo/config"
-	"blogo/router"
-	"blogo/store"
 	"log"
+
+	"github.com/hulizhen/blogo/config"
+	"github.com/hulizhen/blogo/router"
+	"github.com/hulizhen/blogo/store"
 )
 
 func main() {

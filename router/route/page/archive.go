@@ -1,8 +1,9 @@
 package page
 
 import (
-	"blogo/router/route"
 	"net/http"
+
+	"github.com/hulizhen/blogo/router/route"
 
 	"github.com/gin-gonic/gin"
 )

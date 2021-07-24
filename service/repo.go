@@ -5,7 +5,7 @@ import (
 	"os"
 	"os/exec"
 
-	"blogo/config"
+	"github.com/hulizhen/blogo/config"
 )
 
 type RepoService struct {

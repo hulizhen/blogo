@@ -2,8 +2,8 @@ root = "."
 tmp_dir = "tmp"
 
 [build]
-  bin = "./tmp/blogo"
-  cmd = "go build -gcflags=all='-N -l' -o ./tmp/blogo ./cmd/blogo/"
+  bin = "./tmp/blogod"
+  cmd = "go build -gcflags=all='-N -l' -o ./tmp/blogod ./cmd/blogod/"
   delay = 1000
   exclude_dir = ["dist", "tmp"]
   exclude_file = []

@@ -15,10 +15,10 @@ import (
 	"text/scanner"
 	"time"
 
-	"blogo/config"
-	"blogo/internal/markdown"
-	"blogo/internal/xtime"
-	"blogo/service"
+	"github.com/hulizhen/blogo/config"
+	"github.com/hulizhen/blogo/internal/markdown"
+	"github.com/hulizhen/blogo/internal/xtime"
+	"github.com/hulizhen/blogo/service"
 
 	"github.com/jmoiron/sqlx"
 	"github.com/pelletier/go-toml"

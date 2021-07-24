@@ -1,4 +1,4 @@
-module blogo
+module github.com/hulizhen/blogo
 
 go 1.16
 

@@ -25,8 +25,8 @@ release: clean prepare
 	$(MAKE) sass
 	$(MAKE) uglifycss
 	$(MAKE) uglifyjs
-	go build -o $(TMP_DIR)/blogo ./cmd/blogo/
-	GIN_MODE=release $(TMP_DIR)/blogo
+	go build -o $(TMP_DIR)/blogod ./cmd/blogod/
+	GIN_MODE=release $(TMP_DIR)/blogod
 
 
 .PHONY: prepare

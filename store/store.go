@@ -1,8 +1,8 @@
 package store
 
 import (
-	"blogo/config"
-	"blogo/store/model"
+	"github.com/hulizhen/blogo/config"
+	"github.com/hulizhen/blogo/store/model"
 	"fmt"
 
 	_ "github.com/go-sql-driver/mysql"

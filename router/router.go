@@ -7,11 +7,11 @@ import (
 	"reflect"
 	"strings"
 
-	"blogo/config"
-	"blogo/router/route"
-	"blogo/router/route/page"
-	"blogo/router/route/webhook"
-	"blogo/store"
+	"github.com/hulizhen/blogo/config"
+	"github.com/hulizhen/blogo/router/route"
+	"github.com/hulizhen/blogo/router/route/page"
+	"github.com/hulizhen/blogo/router/route/webhook"
+	"github.com/hulizhen/blogo/store"
 
 	"github.com/gin-contrib/multitemplate"
 	"github.com/gin-gonic/gin"
@@ -22,7 +22,7 @@ type Router struct {
 	engine *gin.Engine
 }
 
-// Takes from Go source code 'net/http/method.go'.
+// validHTTPMethods are taken from Go source code 'net/http/method.go'.
 var validHTTPMethods = [...]string{
 	http.MethodGet,
 	http.MethodHead,
@@ -81,8 +81,7 @@ func (r *Router) Run() (err error) {
 	return
 }
 
-// registerRoute registers a request handler with the given `path` and `route`,
-// which implements supported HTTP methods for the corresponding resource.
+// registerRoute registers a route implementing supported HTTP methods for the corresponding resource.
 func (r *Router) registerRoute(path string, route interface{}) {
 	v := reflect.ValueOf(route)
 	for _, n := range validHTTPMethods {

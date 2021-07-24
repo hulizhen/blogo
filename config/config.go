@@ -7,7 +7,7 @@ import (
 	"os"
 	"reflect"
 
-	"blogo/pkg/tilde"
+	"github.com/hulizhen/blogo/pkg/tilde"
 
 	"github.com/pelletier/go-toml"
 )

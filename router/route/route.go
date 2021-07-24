@@ -1,8 +1,8 @@
 package route
 
 import (
-	"blogo/config"
-	"blogo/store"
+	"github.com/hulizhen/blogo/config"
+	"github.com/hulizhen/blogo/store"
 	"fmt"
 	"path/filepath"
 	"strconv"
