@@ -1,6 +1,7 @@
 package config
 
 import (
+	"embed"
 	"errors"
 	"io/fs"
 	"log"
@@ -49,9 +50,6 @@ type Config struct {
 	Mysql      mysql      `toml:"mysql"`
 }
 
-const defaultConfigPath = "./config/config.toml"
-const customConfigPath = "~/.blogo/config.toml"
-
 // expandTildes expands tildes of the path strings in the Config instance recursively.
 func expandTildes(x interface{}) {
 	v := reflect.Indirect(reflect.ValueOf(x))
@@ -69,43 +67,46 @@ func expandTildes(x interface{}) {
 	}
 }
 
+//go:embed config.toml
+var defaultConfigFile embed.FS
+
 // New creates a Config with the default config.toml file,
 // which then overwritten by local custom config.toml file.
-func New() (*Config, error) {
-	var cfg Config
+func New() (cfg *Config, err error) {
+	cfg = new(Config)
 
 	// Parse the default config.toml file.
-	err := parseConfigFile(defaultConfigPath, &cfg, true)
+	f, err := defaultConfigFile.Open("config.toml")
 	if err != nil {
-		return nil, err
+		return
+	}
+	defer func() {
+		_ = f.Close()
+	}()
+	d := toml.NewDecoder(f)
+	err = d.Decode(cfg)
+	if err != nil {
+		return
 	}
 
 	// Parse the custom config.toml file.
-	err = parseConfigFile(customConfigPath, &cfg, false)
-	if err != nil {
-		return nil, err
-	}
-
-	expandTildes(&cfg)
-	return &cfg, nil
-}
-
-// parseConfigFile parses the config.toml file.
-func parseConfigFile(p string, cfg *Config, must bool) (err error) {
-	tilde.Expand(&p)
-
-	f, err := os.Open(p)
-	if !must && errors.Is(err, fs.ErrNotExist) {
-		log.Printf("The config.toml file '%v' doesn't exist, use the defaults.\n", p)
-		return nil
-	}
-	if err == nil {
+	var customConfigPath = "~/.blogo/config.toml"
+	tilde.Expand(&customConfigPath)
+	f, err = os.Open(customConfigPath)
+	if errors.Is(err, fs.ErrNotExist) {
+		log.Printf("The custom config.toml file doesn't exist, use the defaults.\n")
+		err = nil
+	} else {
 		defer func() {
-			err = f.Close()
+			_ = f.Close()
 		}()
-
-		d := toml.NewDecoder(f)
+		d = toml.NewDecoder(f)
 		err = d.Decode(cfg)
 	}
+	if err != nil {
+		return
+	}
+
+	expandTildes(cfg)
 	return
 }
