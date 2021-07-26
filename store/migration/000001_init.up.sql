@@ -1,6 +1,5 @@
 -- Create articles table if not exists.
 CREATE TABLE IF NOT EXISTS articles (
-	id BIGINT NOT NULL,
 	slug VARCHAR(255) NOT NULL,
 	title VARCHAR(255) NOT NULL,
 	content MEDIUMTEXT NOT NULL,
@@ -10,6 +9,5 @@ CREATE TABLE IF NOT EXISTS articles (
 	pinned BOOLEAN DEFAULT FALSE,
 	draft BOOLEAN DEFAULT FALSE,
 	published_at DATETIME NOT NULL,
-	PRIMARY KEY (id),
-	UNIQUE KEY (slug)
+	PRIMARY KEY (slug)
 ) ENGINE = InnoDB DEFAULT CHARSET = utf8mb4;

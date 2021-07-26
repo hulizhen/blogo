@@ -11,7 +11,6 @@ import (
 	"path/filepath"
 	"strings"
 	"sync"
-	"syscall"
 	"text/scanner"
 	"time"
 
@@ -34,7 +33,6 @@ type articleMetadata struct {
 }
 
 type Article struct {
-	ID          int64         `db:"id"`
 	Slug        string        `db:"slug"`
 	Title       string        `db:"title"`
 	Content     template.HTML `db:"content"`
@@ -55,17 +53,9 @@ const (
 
 // NewArticle creates a Article instance with provided repo path `base`, article `path` and article `entry`.
 func NewArticle(path string, entry fs.DirEntry) (article *Article, err error) {
-	// Generate ID with birth timestamp.
-	id := int64(0)
-	info, err := entry.Info()
-	if err == nil {
-		stat, ok := info.Sys().(*syscall.Stat_t)
-		if !ok {
-			log.Printf("failed to get stat information for article path: %v", path)
-			return
-		}
-		id = stat.Birthtimespec.Nano()
-	}
+	// Get URL slug by stripping extension of the file basename.
+	basename := filepath.Base(path)
+	slug := strings.TrimSuffix(basename, filepath.Ext(basename))
 
 	// Parse article to extract metadata and content.
 	metadata, content, err := parseArticle(path)
@@ -82,10 +72,6 @@ func NewArticle(path string, entry fs.DirEntry) (article *Article, err error) {
 		content = strs[0] + strs[1] + strs[2]
 	}
 
-	// Get URL slug by stripping extension of the file basename.
-	basename := filepath.Base(path)
-	slug := strings.TrimSuffix(basename, filepath.Ext(basename))
-
 	// Parse the content and preview with markdown parser.
 	var buf bytes.Buffer
 	if err = markdown.SharedMarkdown().Convert([]byte(content), &buf); err != nil {
@@ -100,7 +86,6 @@ func NewArticle(path string, entry fs.DirEntry) (article *Article, err error) {
 
 	// Parse metadata and fill article.
 	article = &Article{
-		ID:      id,
 		Slug:    slug,
 		Content: template.HTML(content),
 		Preview: template.HTML(preview),
@@ -241,9 +226,9 @@ func (s *ArticleStore) ScanArticles() error {
 			if err == nil {
 				_, err = s.db.NamedExec(`
 				REPLACE INTO articles(
-					id, slug, title, content, preview, categories, tags, pinned, draft, published_at
+					slug, title, content, preview, categories, tags, pinned, draft, published_at
 				) VALUES(
-					:id, :slug, :title, :content, :preview, :categories, :tags, :pinned, :draft, :published_at
+					:slug, :title, :content, :preview, :categories, :tags, :pinned, :draft, :published_at
 				)`,
 					article,
 				)
