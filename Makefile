@@ -25,9 +25,7 @@ release: clean prepare
 	$(MAKE) sass
 	$(MAKE) uglifycss
 	$(MAKE) uglifyjs
-	go build -o $(TMP_DIR)/blogod ./cmd/blogod/
-	GIN_MODE=release $(TMP_DIR)/blogod
-
+	GOOS=linux GOARCH=amd64 go build -o $(TMP_DIR)/blogod ./cmd/blogod/
 
 .PHONY: prepare
 prepare:
@@ -44,18 +42,13 @@ air:
 watchsass := false
 .PHONY: sass
 sass:
-	$(call install-if-needed,sass,brew install sass/sass/sass)
+	$(call install-if-needed,sass,npm install -g sass)
 	@if [ $(watchsass) = true ]; then \
 		sass --watch $(WEB_STYLE_DIR)/main.scss $(DIST_STYLE_DIR)/bundle.css; \
 	else \
 		sass $(WEB_STYLE_DIR)/main.scss $(DIST_STYLE_DIR)/bundle.css; \
 	fi;
 
-
-.PHONY: migrate
-migrate:
-	$(call install-if-needed,migrate,brew install golang-migrate)
-	migrate -path store/migration -database 'mysql://hulz:xxxxxx@tcp(localhost:3306)/blogo?charset=utf8mb4&parseTime=true&loc=Local' -verbose $(cmd)
 
 
 .PHONY: uglifycss
@@ -85,7 +78,7 @@ clean:
 
 # Install the $(1) with $(2) if it hasn't been installed.
 define install-if-needed
-	@if ! command -v $(1) &> /dev/null; then \
+	@if ! command -v $(1); then \
 		echo "Start installing $(1)..."; \
 		$(2) && \
 		echo "Finished installing $(1)!"; \

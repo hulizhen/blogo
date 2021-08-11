@@ -94,7 +94,7 @@ func New() (cfg *Config, err error) {
 	tilde.Expand(&customConfigPath)
 	f, err = os.Open(customConfigPath)
 	if errors.Is(err, fs.ErrNotExist) {
-		log.Printf("The custom config.toml file doesn't exist, use the defaults.\n")
+		log.Printf("The custom file '%v' doesn't exist, use the defaults.\n", customConfigPath)
 		err = nil
 	} else {
 		defer func() {

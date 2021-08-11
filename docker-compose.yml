@@ -1,0 +1,35 @@
+version: '3.9'
+
+services:
+  blogod:
+    build:
+      context: .
+      dockerfile: docker/blogod/Dockerfile
+    image: hulz413/blogo.blogod
+    restart: unless-stopped
+    volumes:
+      - ~/.blogo:/root/.blogo
+    depends_on:
+      - mysql
+
+  nginx:
+    build:
+      context: .
+      dockerfile: docker/nginx/Dockerfile
+    image: hulz413/blogo.nginx
+    restart: unless-stopped
+    ports:
+      - "80:80"
+      - "443:443"
+    depends_on:
+      - blogod
+
+  mysql:
+    image: mysql
+    restart: unless-stopped
+    ports:
+      - "3306:3306"
+    env_file:
+      - ~/.blogo/docker.env
+    volumes:
+      - ~/.blogo/mysql:/var/lib/mysql

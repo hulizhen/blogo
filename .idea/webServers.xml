@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="WebServers">
+    <option name="servers">
+      <webServer id="da8ae7e9-ea9e-4005-99ca-25121c1b67e2" name="Vultr">
+        <fileTransfer accessType="SFTP" host="45.32.46.57" port="22" sshConfigId="f832f9f4-055e-477e-8781-94d788488983" sshConfig="hulz@45.32.46.57:22 agent" authAgent="true">
+          <advancedOptions>
+            <advancedOptions dataProtectionLevel="Private" passiveMode="true" shareSSLContext="true" />
+          </advancedOptions>
+        </fileTransfer>
+      </webServer>
+    </option>
+  </component>
+</project>

@@ -1,11 +1,17 @@
 package store
 
 import (
-	"github.com/hulizhen/blogo/config"
-	"github.com/hulizhen/blogo/store/model"
 	"fmt"
 
+	"github.com/golang-migrate/migrate/v4"
+	"github.com/golang-migrate/migrate/v4/database/mysql"
+	_ "github.com/golang-migrate/migrate/v4/source/file"
+
+	"github.com/hulizhen/blogo/config"
+	"github.com/hulizhen/blogo/store/model"
+
 	_ "github.com/go-sql-driver/mysql"
+
 	"github.com/jmoiron/sqlx"
 )
 
@@ -27,6 +33,16 @@ func New(cfg *config.Config) (*Store, error) {
 	if err != nil {
 		return nil, err
 	}
+
+	driver, err := mysql.WithInstance(db.DB, &mysql.Config{})
+	if err != nil {
+		return nil, err
+	}
+	m, err := migrate.NewWithDatabaseInstance("file://store/migration", "mysql", driver)
+	if err != nil {
+		return nil, err
+	}
+	_ = m.Up()
 
 	articleStore, err := model.NewArticleStore(db, cfg)
 	if err != nil {
