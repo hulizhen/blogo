@@ -11,6 +11,8 @@ services:
       - ~/.blogo:/root/.blogo
     depends_on:
       - mysql
+    command: /bin/sh -c '/blogo/script/wait-for-it.sh mysql:3306 -s -t 60 -- /blogo/blogod'
+
 
   nginx:
     build:
@@ -18,11 +20,25 @@ services:
       dockerfile: docker/nginx/Dockerfile
     image: hulz413/blogo.nginx
     restart: unless-stopped
+    volumes:
+      - ~/.blogo/certbot/conf:/etc/letsencrypt
+      - ~/.blogo/certbot/www:/var/www/certbot
     ports:
       - "80:80"
       - "443:443"
     depends_on:
       - blogod
+    command: /bin/sh -c 'while :; do sleep 6h & wait $${!}; nginx -s reload; done & nginx -g "daemon off;"'
+
+
+  certbot:
+    image: certbot/certbot
+    restart: unless-stopped
+    volumes:
+      - ~/.blogo/certbot/conf:/etc/letsencrypt
+      - ~/.blogo/certbot/www:/var/www/certbot
+    entrypoint: /bin/sh -c 'trap exit TERM; while :; do certbot renew; sleep 12h & wait $${!}; done;'
+
 
   mysql:
     image: mysql

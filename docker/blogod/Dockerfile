@@ -11,4 +11,3 @@ COPY script/wait-for-it.sh /blogo/script/
 ENV GIN_MODE=release
 
 EXPOSE 8080
-CMD ["/blogo/script/wait-for-it.sh", "mysql:3306", "-s", "-t", "60", "--", "/blogo/blogod"]
