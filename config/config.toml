@@ -22,7 +22,7 @@ branch = "main"
 port = 8080
 
 [mysql]
-host = "localhost"
+host = "mysql"
 port = 3306
 database = "blogo"
 username = "root"
