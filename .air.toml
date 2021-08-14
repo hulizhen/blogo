@@ -1,11 +1,11 @@
 root = "."
-tmp_dir = "tmp"
+tmp_dir = "build"
 
 [build]
-  bin = "./tmp/blogod"
-  cmd = "go build -gcflags=all='-N -l' -o ./tmp/blogod ./cmd/blogod/"
+  bin = "./build/blogod"
+  cmd = "go build -gcflags=all='-N -l' -o ./build/blogod ./cmd/blogod/"
   delay = 1000
-  exclude_dir = ["dist", "tmp"]
+  exclude_dir = ["dist", "build"]
   exclude_file = []
   exclude_regex = []
   exclude_unchanged = false

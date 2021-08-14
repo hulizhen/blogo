@@ -1,4 +1,4 @@
-TMP_DIR := tmp
+BUILD_DIR := build
 WEB_DIR := web
 WEB_SCRIPT_DIR := $(WEB_DIR)/script
 WEB_STYLE_DIR := $(WEB_DIR)/style
@@ -9,7 +9,7 @@ DIST_STYLE_DIR := $(DIST_DIR)/style
 
 airless := false
 .PHONY: debug
-debug: clean prepare
+debug: prepare
 	ln -sf bundle.css $(DIST_STYLE_DIR)/bundle.min.css
 	ln -sf ../../$(WEB_SCRIPT_DIR)/theme.js $(DIST_SCRIPT_DIR)/theme.min.js
 	ln -sf ../../$(WEB_SCRIPT_DIR)/main.js $(DIST_SCRIPT_DIR)/bundle.min.js
@@ -21,11 +21,13 @@ debug: clean prepare
 
 
 .PHONY: release
-release: clean prepare
+release: prepare
 	$(MAKE) sass
-	$(MAKE) uglifycss
-	$(MAKE) uglifyjs
-	GOOS=linux GOARCH=amd64 go build -o $(TMP_DIR)/blogod ./cmd/blogod/
+	uglifycss $(DIST_STYLE_DIR)/bundle.css > $(DIST_STYLE_DIR)/bundle.min.css
+	uglifyjs --compress --mangle --toplevel $(WEB_SCRIPT_DIR)/theme.js > $(DIST_SCRIPT_DIR)/theme.min.js
+	uglifyjs --compress --mangle --toplevel $(WEB_SCRIPT_DIR)/main.js > $(DIST_SCRIPT_DIR)/bundle.min.js
+	GOOS=linux GOARCH=amd64 go build -o $(BUILD_DIR)/blogod ./cmd/blogod/
+
 
 .PHONY: prepare
 prepare:
@@ -42,26 +44,11 @@ air:
 watchsass := false
 .PHONY: sass
 sass:
-	$(call install-if-needed,sass,npm install -g sass)
 	@if [ $(watchsass) = true ]; then \
 		sass --watch $(WEB_STYLE_DIR)/main.scss $(DIST_STYLE_DIR)/bundle.css; \
 	else \
 		sass $(WEB_STYLE_DIR)/main.scss $(DIST_STYLE_DIR)/bundle.css; \
 	fi;
-
-
-
-.PHONY: uglifycss
-uglifycss:
-	$(call install-if-needed,uglifycss,npm install uglifycss -g)
-	uglifycss $(DIST_STYLE_DIR)/bundle.css > $(DIST_STYLE_DIR)/bundle.min.css
-
-
-.PHONY: uglifyjs
-uglifyjs:
-	$(call install-if-needed,uglifyjs,npm install uglify-js -g)
-	uglifyjs --compress --mangle --toplevel $(WEB_SCRIPT_DIR)/theme.js > $(DIST_SCRIPT_DIR)/theme.min.js
-	uglifyjs --compress --mangle --toplevel $(WEB_SCRIPT_DIR)/main.js > $(DIST_SCRIPT_DIR)/bundle.min.js
 
 
 .PHONY: test
@@ -71,8 +58,9 @@ test:
 
 .PHONY: clean
 clean:
+	rm -rf __debug_bin
 	rm -rf $(DIST_DIR)
-	rm -rf $(TMP_DIR)
+	rm -rf $(BUILD_DIR)
 	go mod tidy
 
 

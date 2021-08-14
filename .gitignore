@@ -180,4 +180,4 @@ Temporary Items
 ### Custom ###
 **/__debug_bin
 dist/
-tmp/
+build/
