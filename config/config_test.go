@@ -6,38 +6,6 @@ import (
 	"testing"
 )
 
-func TestNew(t *testing.T) {
-
-}
-
-func TestParseConfigFilex(t *testing.T) {
-	cases := []struct {
-		text string
-		must bool
-		port int
-	}{
-		{"", false, 8000},
-		{"[server]\nport = 8080\n", true, 8080},
-	}
-
-	path := "/tmp/blogo-test-config.toml"
-	for i, c := range cases {
-		f, _ := os.Create(path)
-		_, _ = f.Write([]byte(c.text))
-
-		cfg := Config{Server: server{Port: 8000}}
-		if err := parseConfigFile(path, &cfg, c.must); c.must && err != nil {
-			t.Errorf("[%v] Failed to parse config file with error: %v", i, err)
-		}
-		if cfg.Server.Port != c.port {
-			t.Errorf("[%v] The port in config should be '%d'.", i, c.port)
-		}
-
-		_ = f.Close()
-		_ = os.Remove(path)
-	}
-}
-
 func TestExpandTildesx(t *testing.T) {
 	type embeded struct {
 		InnerString string
