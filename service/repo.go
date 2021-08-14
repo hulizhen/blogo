@@ -29,8 +29,8 @@ func (r *RepoService) UpdateRepo() error {
 		}
 	}
 
-	// Pull latest changes of the blog repo.
-	cmd := fmt.Sprintf("cd %v && git pull origin %v", repo.LocalPath, repo.Branch)
+	// Check out branch and pull latest changes of the blog repo.
+	cmd := fmt.Sprintf("cd %v && git checkout %v && git pull", repo.LocalPath, repo.Branch)
 	err := exec.Command("/bin/sh", "-c", cmd).Run()
 	if err != nil {
 		return err
