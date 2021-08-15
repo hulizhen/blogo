@@ -1,0 +1,28 @@
+.navbar-toggler {
+  margin-left: 10px;
+}
+
+.pagination {
+  justify-content: flex-end;
+
+  .page-link {
+    border-width: 0;
+  }
+
+  .pagination-indicator {
+    margin: 0 10px;
+  }
+
+  .pagination-input {
+    width: 46px;
+    height: 30px;
+  }
+
+  input::-webkit-outer-spin-button,
+  input::-webkit-inner-spin-button,
+  input[type="number"] {
+    margin: 0;
+    -webkit-appearance: none;
+    -moz-appearance: textfield;
+  }
+}
