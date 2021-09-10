@@ -37,7 +37,7 @@ $ docker-compose up --build
 ```
 
 The `blogo` application then will be powered up by launching some necessary docker containers.
-These containers are from the docker services defined in the `docker-compose.yml` file:
+These containers are from the docker services defined in the `compose.yaml` file:
 * blogod: the main web application as the blog engine.
 * mysql: the relational database to store blog articles, comments, website statistics data, etc.
 * nginx: the reverse proxy server sitting between the browsers and the blog engine.
